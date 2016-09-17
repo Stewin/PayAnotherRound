@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">PayAnotherRound</string>
+    <string name="app_name">Pay Another Round</string>
+    <string name="summary">Summary</string>
+    <string name="add_receipt">Add Receipt</string>
+    <string name="actionbaritem_settings">Settings</string>
+    <string name="title_trip_settings">Trip Settings</string>
+    <string name="newUser">New User</string>
+    <string name="save">Save</string>
+    <string name="createTrip">Create Trip</string>
 </resources>

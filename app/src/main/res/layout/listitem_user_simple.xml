@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <CheckBox
+        android:id="@+id/cb_userbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:checked="false" />
+
+    <ImageView
+        android:id="@+id/iv_User"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp"
+        android:minHeight="75dp"
+        android:minWidth="75dp"
+        android:src="@drawable/picture_user_default" />
+
+    <EditText
+        android:id="@+id/et_Name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:hint="Name"
+        android:singleLine="true" />
+
+</LinearLayout>

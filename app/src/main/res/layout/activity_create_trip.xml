@@ -8,38 +8,51 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="net.ddns.swinterberger.payanotherround.MainActivity">
+    tools:context="net.ddns.swinterberger.payanotherround.CreateTrip">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <Button
-        android:id="@+id/btn_Summary"
+        android:id="@+id/btn_Save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:text="@string/summary" />
+        android:text="@string/save" />
 
     <Button
-        android:id="@+id/btn_addReceipt"
-        android:layout_width="match_parent"
+        android:id="@+id/btn_newUser"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_Summary"
-        android:layout_alignEnd="@id/btn_Summary"
+        android:layout_above="@id/btn_Save"
+        android:layout_alignEnd="@id/btn_Save"
         android:layout_alignParentStart="true"
-        android:text="@string/add_receipt" />
+        android:text="@string/newUser" />
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/lv_Users"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btn_addReceipt"
+        android:layout_above="@id/btn_newUser"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/my_toolbar" />
+        android:layout_below="@+id/et_TripTitle" />
+
+    <EditText
+        android:id="@+id/et_TripTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/my_toolbar"
+        android:hint="Title"
+        android:inputType="text"
+        android:singleLine="true" />
+
 </RelativeLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="summary">Zämefassig</string>
+    <string name="add_receipt">Neui Quittig</string>
+    <string name="app_name">No ä Rundi!</string>
+    <string name="actionbaritem_settings">Ihstellige</string>
+    <string name="createTrip">Nöiä Trip</string>
+    <string name="newUser">Neue Benutzer</string>
+    <string name="save">Spichere</string>
+    <string name="title_trip_settings">Trip Ihstellige</string>
+</resources>
