@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
@@ -57,11 +59,54 @@ public class TripSettingsActivity extends AppCompatActivity {
     }
 
     private void refreshList() {
-        tripList.setAdapter(new ArrayAdapter<Trip>(TripSettingsActivity.this, android.R.layout.simple_expandable_list_item_1, trips));
+        tripList.setAdapter(new SimpleTripListItemAdapter());
     }
 
     private void loadTrips() {
         //ToDo: Load existing Trips from DB
+    }
+
+    private class SimpleTripListItemAdapter extends BaseAdapter {
+
+
+        @Override
+        public int getCount() {
+            return trips.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return trips.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return trips.get(position).getId();
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            if (convertView == null) {
+                convertView = TripSettingsActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
+
+                TextView tripTirle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
+                tripTirle.setText(trips.get(position).getName());
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent();
+                        intent.putExtra("tripId", trips.get(position).getId());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+            }
+
+            return convertView;
+        }
     }
 
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class CreateTrip extends AppCompatActivity {
     private Button newUser;
     private Button saveTrip;
     private ListView userListView;
+
+    private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +51,26 @@ public class CreateTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                User user = new User();
+                user.setName("Stefan");
+                dbAdapter.createUser(user);
+
             }
         });
 
         refreshList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dbAdapter.open();
+    }
+
+    @Override
+    protected void onPause() {
+        dbAdapter.close();
+        super.onPause();
     }
 
     private void refreshList() {

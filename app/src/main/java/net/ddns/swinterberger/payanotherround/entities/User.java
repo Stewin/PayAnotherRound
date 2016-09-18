@@ -13,7 +13,7 @@ import java.util.List;
 public class User {
 
     private static int userCounter = 0;
-    private int id;
+    private long id;
     private String name;
     private Color color;
     private List<Debt> debts;
@@ -26,8 +26,12 @@ public class User {
         userCounter++;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

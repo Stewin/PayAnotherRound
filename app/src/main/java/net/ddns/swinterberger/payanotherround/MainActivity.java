@@ -7,8 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_TRIPSETTINGS = 1337;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openTripSettings() {
-        startActivity(new Intent(this, TripSettingsActivity.class));
+        startActivityForResult(new Intent(this, TripSettingsActivity.class), REQUEST_CODE_TRIPSETTINGS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_TRIPSETTINGS && resultCode == RESULT_OK) {
+            int tripId = data.getIntExtra("tripId", -1);
+            loadTripWithId(tripId);
+        }
+    }
+
+    private void loadTripWithId(int tripId) {
+        Toast.makeText(this, "Trip mit ID " + tripId + " geladen", Toast.LENGTH_SHORT).show();
     }
 }
