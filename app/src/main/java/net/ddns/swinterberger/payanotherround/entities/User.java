@@ -1,4 +1,8 @@
-package net.ddns.swinterberger.payanotherround;
+package net.ddns.swinterberger.payanotherround.entities;
+
+import android.graphics.Color;
+
+import net.ddns.swinterberger.payanotherround.UserObserver;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,12 +12,18 @@ import java.util.List;
  */
 public class User {
 
+    private static int userCounter = 0;
     private int id;
     private String name;
+    private Color color;
+    private List<Debt> debts;
+    //Image
     private List<UserObserver> userObserverList;
 
     public User() {
         this.userObserverList = new LinkedList<>();
+        this.id = userCounter;
+        userCounter++;
     }
 
     public int getId() {
