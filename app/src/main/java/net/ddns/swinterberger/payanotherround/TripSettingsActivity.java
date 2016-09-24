@@ -86,7 +86,6 @@ public class TripSettingsActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-
             if (convertView == null) {
                 convertView = TripSettingsActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
 
@@ -96,7 +95,6 @@ public class TripSettingsActivity extends AppCompatActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         Intent intent = new Intent();
                         intent.putExtra("tripId", trips.get(position).getId());
                         setResult(RESULT_OK, intent);
@@ -104,7 +102,6 @@ public class TripSettingsActivity extends AppCompatActivity {
                     }
                 });
             }
-
             return convertView;
         }
     }

@@ -7,4 +7,5 @@
     <string name="newUser">New User</string>
     <string name="save">Save</string>
     <string name="createTrip">Create Trip</string>
+    <string name="menu_entry_delete">Delete</string>
 </resources>

@@ -16,6 +16,9 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE user (id INTEGER PRIMARY KEY, name TEXT not null)");
+        db.execSQL("CREATE TABLE bill (id INTEGER PRIMARY KEY, description TEXT not null)");
+        db.execSQL("CREATE TABLE trip (id INTEGER PRIMARY KEY, name TEXT not null)");
+        db.execSQL("CREATE TABLE debt (id INTEGER PRIMARY KEY, amount INTEGER not null)");
     }
 
     @Override
