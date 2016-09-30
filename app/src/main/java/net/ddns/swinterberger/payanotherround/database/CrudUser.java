@@ -70,7 +70,11 @@ public class CrudUser {
 
     public boolean updateUser(final User user) {
         final ContentValues values = new ContentValues();
-        values.put("name", user.getName());
+        String name = user.getName();
+        if (name == null) {
+            name = "new";
+        }
+        values.put("name", name);
         return database.update(TABLE_USER, values, "id = " + user.getId(), null) > 0;
     }
 

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.entities.Trip;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.List;
@@ -22,8 +23,6 @@ import java.util.List;
 public class CreateTrip extends AppCompatActivity {
 
     private List<User> users;
-    private Button newUser;
-    private Button saveTrip;
     private ListView userListView;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
@@ -39,7 +38,7 @@ public class CreateTrip extends AppCompatActivity {
 
         users = loadAllUsersFromDb();
 
-        newUser = (Button) findViewById(R.id.btn_newUser);
+        Button newUser = (Button) findViewById(R.id.btn_newUser);
         newUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,17 +49,21 @@ public class CreateTrip extends AppCompatActivity {
             }
         });
 
-        saveTrip = (Button) findViewById(R.id.btn_Save);
+        Button saveTrip = (Button) findViewById(R.id.btn_Save);
         saveTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (User user : users) {
                     dbAdapter.getCrudUser().updateUser(user);
                 }
+
+                EditText tripTitle = (EditText) findViewById(R.id.et_TripTitle);
+                Trip newTrip = new Trip();
+                newTrip.setName(tripTitle.getText().toString());
+                dbAdapter.getCrudTrip().createTrip(newTrip);
                 finish();
             }
         });
-        refreshList();
     }
 
     private List<User> loadAllUsersFromDb() {
@@ -75,7 +78,7 @@ public class CreateTrip extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        dbAdapter.close();
+//        dbAdapter.close();
         super.onPause();
     }
 
@@ -84,7 +87,7 @@ public class CreateTrip extends AppCompatActivity {
             userListView = (ListView) findViewById(R.id.lv_Users);
             registerForContextMenu(userListView);
         }
-        userListView.setAdapter(new SimpleUserListItemAdapter());
+        userListView.setAdapter(new UserOneCheckboxListItemAdapter());
     }
 
     @Override
@@ -116,7 +119,7 @@ public class CreateTrip extends AppCompatActivity {
         }
     }
 
-    private class SimpleUserListItemAdapter extends BaseAdapter {
+    private class UserOneCheckboxListItemAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -136,7 +139,7 @@ public class CreateTrip extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = CreateTrip.this.getLayoutInflater().inflate(R.layout.listitem_user_simple, null);
+                convertView = CreateTrip.this.getLayoutInflater().inflate(R.layout.listitem_user_one_checkbox, null);
 
                 EditText nameField = (EditText) convertView.findViewById(R.id.et_Name);
                 nameField.setText(users.get(position).getName());

@@ -2,16 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:longClickable="true"
-    android:weightSum="1">
+    android:orientation="horizontal">
 
     <CheckBox
         android:id="@+id/cb_userbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="5dp"
-        android:checked="true" />
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+
+    <CheckBox
+        android:id="@+id/cb_userbox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
 
     <ImageView
         android:id="@+id/iv_User"
@@ -25,12 +36,13 @@
         android:minWidth="75dp"
         android:src="@drawable/picture_user_default" />
 
-    <EditText
-        android:id="@+id/et_Name"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tv_Name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:hint="Name"
-        android:singleLine="true" />
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
 </LinearLayout>

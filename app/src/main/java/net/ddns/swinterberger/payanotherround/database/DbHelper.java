@@ -15,10 +15,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE user (id INTEGER PRIMARY KEY, name TEXT not null)");
-        db.execSQL("CREATE TABLE bill (id INTEGER PRIMARY KEY, description TEXT not null)");
+        db.execSQL("CREATE TABLE user (id INTEGER PRIMARY KEY, name TEXT not null, color TEXT, pictureid TEXT)");
+        db.execSQL("CREATE TABLE bill (id INTEGER PRIMARY KEY, description TEXT not null, amount INTEGER NOT NULL, currency TEXT NOT NULL)");
         db.execSQL("CREATE TABLE trip (id INTEGER PRIMARY KEY, name TEXT not null)");
-        db.execSQL("CREATE TABLE debt (id INTEGER PRIMARY KEY, amount INTEGER not null)");
+        db.execSQL("CREATE TABLE attend (fk_user INTEGER NOT NULL, fk_trip INTEGER NOT NULL, FOREIGN KEY (fk_user) REFERENCES user(id), FOREIGN KEY (fk_trip) REFERENCES trip(id), CONSTRAINT pk_attendid PRIMARY KEY (fk_user, fk_trip))");
+        db.execSQL("CREATE TABLE debt (fk_creditor INTEGER NOT NULL, fk_debtor INTEGER NOT NULL, amount INTEGER not null, FOREIGN KEY (fk_creditor) REFERENCES user(id), FOREIGN KEY (fk_debtor) REFERENCES user(id), CONSTRAINT pk_debtid PRIMARY KEY (fk_creditor, fk_debtor))");
     }
 
     @Override

@@ -20,7 +20,11 @@
         <activity
             android:name=".TripSettingsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CreateTrip"></activity>
+        <activity
+            android:name=".CreateTrip"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CreateBill"
+            android:screenOrientation="portrait" />
     </application>
-
 </manifest>

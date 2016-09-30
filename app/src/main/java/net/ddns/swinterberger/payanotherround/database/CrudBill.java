@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.ddns.swinterberger.payanotherround.entities.Bill;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Stefan on 24.09.2016.
  */
@@ -38,6 +41,20 @@ public class CrudBill {
         }
         result.close();
         return bill;
+    }
+
+    public List<Bill> readAllUsers() {
+        Bill bill = null;
+        ArrayList<Bill> users = new ArrayList<>();
+        final Cursor result = database.query(TABLE_BILL, new String[]{"id", "name"}, null,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            bill = getNextBill(result);
+            users.add(bill);
+        }
+        result.close();
+        return users;
     }
 
     private Bill getNextBill(final Cursor cursor) {

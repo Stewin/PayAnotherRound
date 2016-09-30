@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <EditText
+        android:id="@+id/et_BillTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:padding="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_BillAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:ems="10"
+            android:inputType="number" />
+
+        <Spinner
+            android:id="@+id/sp_Currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_Payer"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="10dp"
+            android:background="@color/button_material_light"
+            android:maxHeight="48dp"
+            android:maxWidth="48dp"
+            android:minHeight="24dp"
+            android:minWidth="24dp"
+            android:src="@drawable/icon_payer" />
+
+        <ImageView
+            android:id="@+id/iv_Debtor"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="10dp"
+            android:background="@color/button_material_light"
+            android:maxHeight="48dp"
+            android:maxWidth="48dp"
+            android:minHeight="24dp"
+            android:minWidth="24dp"
+            android:src="@drawable/icon_debtor" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_SaveBill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:minHeight="48dp"
+            android:onClick="onSaveButtonClicked"
+            android:text="@string/button_save" />
+
+        <ListView
+            android:id="@+id/lw_users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_SaveBill"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="true"
+            android:foregroundGravity="top" />
+
+    </RelativeLayout>
+
+</LinearLayout>

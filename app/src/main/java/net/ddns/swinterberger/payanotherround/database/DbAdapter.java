@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 public class DbAdapter {
 
     private final DbHelper dbHelper;
+
     private CrudUser crudUser;
+    private CrudBill crudBill;
+    private CrudTrip crudTrip;
 
     private SQLiteDatabase db;
 
@@ -33,5 +36,21 @@ public class DbAdapter {
             crudUser = new CrudUser(db);
         }
         return crudUser;
+    }
+
+    public CrudBill getCrudBill() {
+        open();
+        if (crudBill == null) {
+            crudBill = new CrudBill(db);
+        }
+        return crudBill;
+    }
+
+    public CrudTrip getCrudTrip() {
+        open();
+        if (crudTrip == null) {
+            crudTrip = new CrudTrip(db);
+        }
+        return crudTrip;
     }
 }

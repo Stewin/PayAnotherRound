@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
 import java.util.ArrayList;
@@ -20,6 +25,9 @@ public class TripSettingsActivity extends AppCompatActivity {
 
     private List<Trip> trips;
     private ListView tripList;
+
+
+    private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +47,7 @@ public class TripSettingsActivity extends AppCompatActivity {
         });
 
         tripList = (ListView) findViewById(R.id.lv_TripList);
-
-        loadTrips();
-        if (trips == null) {
-            trips = new ArrayList<>();
-        }
-
-        //Zum Testen
-        Trip trip1 = new Trip();
-        trip1.setName("Ausgang");
-        trip1.setId(0);
-        trips.add(trip1);
-        Trip trip2 = new Trip();
-        trip2.setName("Ferien");
-        trip2.setId(1);
-        trips.add(trip2);
-
-        refreshList();
+        registerForContextMenu(tripList);
     }
 
     private void refreshList() {
@@ -63,11 +55,58 @@ public class TripSettingsActivity extends AppCompatActivity {
     }
 
     private void loadTrips() {
-        //ToDo: Load existing Trips from DB
+        trips = dbAdapter.getCrudTrip().readAllTrips();
+        if (trips == null) {
+            trips = new ArrayList<>();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dbAdapter.open();
+        loadTrips();
+        refreshList();
+    }
+
+    @Override
+    protected void onPause() {
+//        dbAdapter.close();
+        super.onPause();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_TripList) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.context_menu_trips, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.delete:
+                int position = ((AdapterView.AdapterContextMenuInfo) info).position;
+                long id = trips.get(position).getId();
+                dbAdapter.getCrudTrip().deleteTripById(id);
+
+                for (Trip trip : trips) {
+                    if (trip.getId() == id) {
+                        trips.remove(trip);
+                        break;
+                    }
+                }
+                refreshList();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private class SimpleTripListItemAdapter extends BaseAdapter {
-
 
         @Override
         public int getCount() {

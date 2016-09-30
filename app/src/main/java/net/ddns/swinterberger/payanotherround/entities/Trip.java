@@ -7,23 +7,22 @@ import java.util.List;
  */
 public class Trip {
 
-    private int id;
+    private long id;
     private String name;
     private List<User> users;
     private List<Bill> bills;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(final int id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
     public String getName() {
         return name;
     }
-
     public void setName(final String name) {
         this.name = name;
     }
