@@ -87,7 +87,7 @@
             android:text="@string/button_save" />
 
         <ListView
-            android:id="@+id/lw_users"
+            android:id="@+id/lv_users"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_SaveBill"

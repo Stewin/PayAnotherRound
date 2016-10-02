@@ -77,8 +77,8 @@ public final class CrudUser {
         final String query = "SELECT * " +
                 "FROM " + TABLE_USER + " as user," + CrudAttend.TABLE_ATTEND + " as attend," + CrudTrip.TABLE_TRIP + " as trip "
                 + "WHERE user." + CrudUser.ATTRIBUTE_ID + " = attend." + CrudAttend.ATTRIBUTE_USER_ID
-                + " AND attend." + CrudAttend.ATTRIBUTE_TRIP_ID + " = " + tripId;
-
+                + " AND attend." + CrudAttend.ATTRIBUTE_TRIP_ID + " = " + "trip." + CrudTrip.ATTRIBUTE_ID
+                + " AND trip." + CrudTrip.ATTRIBUTE_ID + " = " + tripId;
         Log.i("DB-Query", query);
 
 

@@ -7,5 +7,11 @@
     <string name="createTrip">Trip erstellen</string>
     <string name="newUser">Benutzer hinzufügen</string>
     <string name="save">Speichern</string>
-    <string name="title_trip_settings">Trip Einstellungen</string>
+    <string name="title_trip_settings">Trip Auswahl</string>
+    <string name="button_save">Speichern</string>
+    <string name="editTrip">Trip bearbeiten</string>
+    <string name="extra_tripid"></string>
+    <string name="lable_no_trip_selected">Kein Trip ausgewählt</string>
+    <string name="menu_entry_delete">Löschen</string>
+    <string name="menu_entry_edit">Bearbeiten</string>
 </resources>

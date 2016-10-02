@@ -14,14 +14,14 @@ import android.widget.TextView;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
-public class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_TRIPSETTINGS = 1337;
     private static final String CURRENT_TRIP_ID = "currentTripId";
 
-    long currentTripId;
-    SharedPreferences preferences;
-    TextView tripTitle;
+    private long currentTripId;
+    private SharedPreferences preferences;
+    private TextView tripTitle;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
     private Trip currentTrip;
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -89,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_TRIPSETTINGS && resultCode == RESULT_OK) {
             long tripId = data.getLongExtra("tripId", -1);
+            this.currentTripId = tripId;
 
             SharedPreferences.Editor editor = preferences.edit();
             editor.putLong(CURRENT_TRIP_ID, tripId);

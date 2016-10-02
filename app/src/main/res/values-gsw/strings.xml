@@ -7,5 +7,10 @@
     <string name="createTrip">Nöiä Trip</string>
     <string name="newUser">Neue Benutzer</string>
     <string name="save">Spichere</string>
-    <string name="title_trip_settings">Trip Ihstellige</string>
+    <string name="title_trip_settings">Trip Uswahl</string>
+    <string name="button_save">Spichere</string>
+    <string name="editTrip">Trip bearbeitä</string>
+    <string name="lable_no_trip_selected">Kei Trip usgwählt</string>
+    <string name="menu_entry_delete">Löschä</string>
+    <string name="menu_entry_edit">Bearbeitä</string>
 </resources>

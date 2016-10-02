@@ -4,16 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.entities.Bill;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.List;
@@ -49,12 +52,53 @@ public class CreateBill extends AppCompatActivity {
 
         users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
-        ListView userList = (ListView) findViewById(R.id.lw_users);
+        ListView userList = (ListView) findViewById(R.id.lv_users);
         userList.setAdapter(new UserTwoCheckboxesListItemAdapter());
     }
 
     public final void onSaveButtonClicked(final View v) {
+
+        Bill bill = createBillFromActivity();
+
+
         finish();
+    }
+
+    private Bill createBillFromActivity() {
+        Bill newBill = new Bill();
+
+        //Description
+        String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
+        newBill.setDescription(description);
+
+        //Amount
+        EditText amountField = (EditText) findViewById(R.id.et_BillAmount);
+        int amount = 0;
+        try {
+            amount = Integer.parseInt(amountField.getText().toString());
+        } catch (NumberFormatException nfe) {
+            Log.e("NumberFormatException", nfe.toString());
+        }
+        newBill.setAmmount(amount);
+
+        //Currency
+        String currency = ((Spinner) findViewById(R.id.sp_Currency)).getSelectedItem().toString();
+        newBill.setCurrency(currency);
+
+        //Trip
+        newBill.setTripId(this.tripId);
+
+        //Payer
+        newBill.setPayerId(getIdOfPayer());
+
+        //Debtor
+
+        return newBill;
+    }
+
+    private int getIdOfPayer() {
+        //TODO: Get ID of the User who is marked (with Checkbox) as Payer.
+        return 0;
     }
 
     private class UserTwoCheckboxesListItemAdapter extends BaseAdapter {
@@ -76,8 +120,8 @@ public class CreateBill extends AppCompatActivity {
 
         @Override
         public final View getView(final int position, final View convertView, final ViewGroup parent) {
-            if (convertView == null) {
-                View returnView = convertView;
+            View returnView = convertView;
+            if (returnView == null) {
                 returnView = CreateBill.this.getLayoutInflater().inflate(R.layout.listitem_user_two_checkbox, null);
 
                 TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
@@ -87,7 +131,7 @@ public class CreateBill extends AppCompatActivity {
 
                 CheckBox cbDebtor = (CheckBox) findViewById(R.id.cb_userbox2);
             }
-            return convertView;
+            return returnView;
         }
     }
 }

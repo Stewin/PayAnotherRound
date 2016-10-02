@@ -15,8 +15,11 @@ public final class Bill {
     private int ammount;
     private String currency; //Währung
     private Trip trip;
+    private long tripId;
     private User payer;
-    private List<User> debtor; //Schuldner
+    private int payerId;
+    private List<User> debtors; //Schuldner
+    private List<Integer> debtorIds;
 
     public final long getId() {
         return id;
@@ -56,5 +59,21 @@ public final class Bill {
 
     public final void setTrip(final Trip trip) {
         this.trip = trip;
+    }
+
+    public final long getTripId() {
+        return tripId;
+    }
+
+    public final void setTripId(final long tripId) {
+        this.tripId = tripId;
+    }
+
+    public int getPayerId() {
+        return payerId;
+    }
+
+    public void setPayerId(int payerId) {
+        this.payerId = payerId;
     }
 }
