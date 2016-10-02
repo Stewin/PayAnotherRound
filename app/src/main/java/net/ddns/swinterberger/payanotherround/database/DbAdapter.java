@@ -4,15 +4,19 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Created by Stefan on 18.09.2016.
+ * Adapter Class for Queries to the Database.
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
-public class DbAdapter {
+public final class DbAdapter {
 
     private final DbHelper dbHelper;
 
     private CrudUser crudUser;
     private CrudBill crudBill;
     private CrudTrip crudTrip;
+    private CrudAttend crudAttend;
 
     private SQLiteDatabase db;
 
@@ -20,17 +24,17 @@ public class DbAdapter {
         dbHelper = new DbHelper(context, "ParDatabase", null, 1);
     }
 
-    public void open() {
+    public final void open() {
         if (db == null || !db.isOpen()) {
             db = dbHelper.getWritableDatabase();
         }
     }
 
-    public void close() {
+    public final void close() {
         dbHelper.close();
     }
 
-    public CrudUser getCrudUser() {
+    public final CrudUser getCrudUser() {
         open();
         if (crudUser == null) {
             crudUser = new CrudUser(db);
@@ -38,7 +42,7 @@ public class DbAdapter {
         return crudUser;
     }
 
-    public CrudBill getCrudBill() {
+    public final CrudBill getCrudBill() {
         open();
         if (crudBill == null) {
             crudBill = new CrudBill(db);
@@ -46,11 +50,19 @@ public class DbAdapter {
         return crudBill;
     }
 
-    public CrudTrip getCrudTrip() {
+    public final CrudTrip getCrudTrip() {
         open();
         if (crudTrip == null) {
             crudTrip = new CrudTrip(db);
         }
         return crudTrip;
+    }
+
+    public final CrudAttend getCrudAttend() {
+        open();
+        if (crudAttend == null) {
+            crudAttend = new CrudAttend(db);
+        }
+        return crudAttend;
     }
 }

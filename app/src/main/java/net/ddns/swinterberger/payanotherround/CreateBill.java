@@ -13,20 +13,26 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Stefan on 24.09.2016.
+ * Activity to creating a new Bill.
+ *
+ * @author Stefan Winteberger
+ * @version 1.0
  */
 public class CreateBill extends AppCompatActivity {
 
     private List<User> users;
+    private long tripId;
+
+    private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_bill);
@@ -39,20 +45,15 @@ public class CreateBill extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
 
-        users = new ArrayList<>();
-        //Zu Testzwecken
-        User user1 = new User();
-        user1.setName("Stufi");
-        users.add(user1);
-        User user2 = new User();
-        user2.setName("Thomi");
-        users.add(user2);
+        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
+
+        users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
         ListView userList = (ListView) findViewById(R.id.lw_users);
         userList.setAdapter(new UserTwoCheckboxesListItemAdapter());
     }
 
-    public void onSaveButtonClicked(final View v) {
+    public final void onSaveButtonClicked(final View v) {
         finish();
     }
 
@@ -74,11 +75,12 @@ public class CreateBill extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public final View getView(final int position, final View convertView, final ViewGroup parent) {
             if (convertView == null) {
-                convertView = CreateBill.this.getLayoutInflater().inflate(R.layout.listitem_user_two_checkbox, null);
+                View returnView = convertView;
+                returnView = CreateBill.this.getLayoutInflater().inflate(R.layout.listitem_user_two_checkbox, null);
 
-                TextView nameField = (TextView) convertView.findViewById(R.id.tv_Name);
+                TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
                 nameField.setText(users.get(position).getName());
 
                 CheckBox cbPayer = (CheckBox) findViewById(R.id.cb_userbox);

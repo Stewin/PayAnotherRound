@@ -21,7 +21,7 @@ import net.ddns.swinterberger.payanotherround.entities.Trip;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripSettingsActivity extends AppCompatActivity {
+public class TripChooserActivity extends AppCompatActivity {
 
     private List<Trip> trips;
     private ListView tripList;
@@ -32,7 +32,7 @@ public class TripSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip_settings);
+        setContentView(R.layout.activity_trip_chooser);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle(this.getResources().getString(R.string.title_trip_settings));
@@ -42,7 +42,7 @@ public class TripSettingsActivity extends AppCompatActivity {
         buttonNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TripSettingsActivity.this, CreateTrip.class));
+                startActivity(new Intent(TripChooserActivity.this, CreateTrip.class));
             }
         });
 
@@ -87,12 +87,21 @@ public class TripSettingsActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.delete:
-                int position = ((AdapterView.AdapterContextMenuInfo) info).position;
-                long id = trips.get(position).getId();
-                dbAdapter.getCrudTrip().deleteTripById(id);
 
+        int position = info.position;
+        long id = trips.get(position).getId();
+
+        switch (item.getItemId()) {
+
+            case R.id.edit:
+                Intent intent = new Intent(this, CreateTrip.class);
+                String string = getResources().getString(R.string.extra_tripid);
+                intent.putExtra(string, id);
+                startActivity(intent);
+                break;
+
+            case R.id.delete:
+                dbAdapter.getCrudTrip().deleteTripById(id);
                 for (Trip trip : trips) {
                     if (trip.getId() == id) {
                         trips.remove(trip);
@@ -100,10 +109,12 @@ public class TripSettingsActivity extends AppCompatActivity {
                     }
                 }
                 refreshList();
-                return true;
+                break;
+
             default:
                 return super.onContextItemSelected(item);
         }
+        return true;
     }
 
     private class SimpleTripListItemAdapter extends BaseAdapter {
@@ -126,7 +137,7 @@ public class TripSettingsActivity extends AppCompatActivity {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = TripSettingsActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
+                convertView = TripChooserActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
 
                 TextView tripTirle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
                 tripTirle.setText(trips.get(position).getName());

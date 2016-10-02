@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -22,8 +24,11 @@ import java.util.List;
 
 public class CreateTrip extends AppCompatActivity {
 
-    private List<User> users;
+    private List<User> allUsers;
+
     private ListView userListView;
+    private EditText etTripTitle;
+    private long tripId;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
 
@@ -33,17 +38,40 @@ public class CreateTrip extends AppCompatActivity {
         setContentView(R.layout.activity_create_trip);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        myToolbar.setTitle(getResources().getString(R.string.createTrip));
+        etTripTitle = (EditText) findViewById(R.id.et_TripTitle);
+
+        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1L);
+        allUsers = loadAllUsersFromDb();
+
+        if (tripId == -1) {
+            myToolbar.setTitle(getResources().getString(R.string.createTrip));
+        } else {
+            myToolbar.setTitle(getResources().getString(R.string.editTrip));
+            Trip trip = dbAdapter.getCrudTrip().readTripById(tripId);
+            etTripTitle.setText(trip.getName());
+            List<User> activeUsers = loadUsersByTripId(tripId);
+            for (User user : activeUsers) {
+                for (User user1 : allUsers) {
+                    if (user.equals(user1)) {
+                        user1.setCheckboxEnabled(true);
+                    }
+                }
+            }
+        }
+
         setSupportActionBar(myToolbar);
+        setupButtons();
 
-        users = loadAllUsersFromDb();
+        refreshList();
+    }
 
+    private void setupButtons() {
         Button newUser = (Button) findViewById(R.id.btn_newUser);
         newUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 User user = new User();
-                users.add(user);
+                allUsers.add(user);
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
             }
@@ -53,14 +81,33 @@ public class CreateTrip extends AppCompatActivity {
         saveTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (User user : users) {
+                for (User user : allUsers) {
                     dbAdapter.getCrudUser().updateUser(user);
                 }
 
-                EditText tripTitle = (EditText) findViewById(R.id.et_TripTitle);
                 Trip newTrip = new Trip();
-                newTrip.setName(tripTitle.getText().toString());
-                dbAdapter.getCrudTrip().createTrip(newTrip);
+                newTrip.setId(tripId);
+                newTrip.setName(etTripTitle.getText().toString());
+                if (tripId == -1) {
+                    tripId = dbAdapter.getCrudTrip().createTrip(newTrip);
+                    for (User user : allUsers) {
+                        if (user.isCheckboxEnabled()) {
+                            dbAdapter.getCrudAttend().createAttend(user.getId(), tripId);
+                        }
+                    }
+                } else {
+                    dbAdapter.getCrudTrip().updateTrip(newTrip);
+
+                    for (User user : allUsers) {
+                        if (user.isCheckboxEnabled()) {
+                            dbAdapter.getCrudAttend().createAttend(user.getId(), tripId);
+                        } else {
+                            dbAdapter.getCrudAttend().deleteAttend(user.getId(), tripId);
+                        }
+                    }
+
+                }
+
                 finish();
             }
         });
@@ -68,6 +115,10 @@ public class CreateTrip extends AppCompatActivity {
 
     private List<User> loadAllUsersFromDb() {
         return dbAdapter.getCrudUser().readAllUsers();
+    }
+
+    private List<User> loadUsersByTripId(final long tripId) {
+        return dbAdapter.getCrudUser().readUsersByTripId(tripId);
     }
 
     @Override
@@ -105,11 +156,11 @@ public class CreateTrip extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.delete:
                 int position = ((AdapterView.AdapterContextMenuInfo) info).position;
-                long id = users.get(position).getId();
+                long id = allUsers.get(position).getId();
                 dbAdapter.getCrudUser().deleteUserById(id);
-                for (User user : users) {
+                for (User user : allUsers) {
                     if (user.getId() == id) {
-                        users.remove(user);
+                        allUsers.remove(user);
                     }
                 }
                 refreshList();
@@ -123,38 +174,48 @@ public class CreateTrip extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return users.size();
+            return allUsers.size();
         }
 
         @Override
         public Object getItem(final int position) {
-            return users.get(position);
+            return allUsers.get(position);
         }
 
         @Override
         public long getItemId(final int position) {
-            return users.get(position).getId();
+            return allUsers.get(position).getId();
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = CreateTrip.this.getLayoutInflater().inflate(R.layout.listitem_user_one_checkbox, null);
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            View returnView = convertView;
+            if (returnView == null) {
+                returnView = CreateTrip.this.getLayoutInflater().inflate(R.layout.listitem_user_one_checkbox, null);
 
-                EditText nameField = (EditText) convertView.findViewById(R.id.et_Name);
-                nameField.setText(users.get(position).getName());
+                EditText nameField = (EditText) returnView.findViewById(R.id.et_Name);
+                nameField.setText(allUsers.get(position).getName());
                 nameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if (!hasFocus) {
                             int position = v.getId();
-                            users.get(position).setName(((EditText) v).getText().toString());
+                            allUsers.get(position).setName(((EditText) v).getText().toString());
                         }
                     }
                 });
                 nameField.setId(position);
+
+                CheckBox checkBox = (CheckBox) returnView.findViewById(R.id.cb_userbox);
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+                        allUsers.get(position).setCheckboxEnabled(isChecked);
+                    }
+                });
+                checkBox.setChecked(allUsers.get(position).isCheckboxEnabled());
             }
-            return convertView;
+            return returnView;
         }
     }
 }

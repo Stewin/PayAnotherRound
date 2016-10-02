@@ -10,4 +10,7 @@
     <string name="menu_entry_delete">Delete</string>
     <string name="lable_no_trip_selected">No Trip Selected</string>
     <string name="button_save">Save</string>
+    <string name="menu_entry_edit">Edit</string>
+    <string name="extra_tripid">tripid</string>
+    <string name="editTrip">Edit Trip</string>
 </resources>

@@ -2,15 +2,15 @@ package net.ddns.swinterberger.payanotherround.entities;
 
 import android.graphics.Color;
 
-import net.ddns.swinterberger.payanotherround.UserObserver;
-
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Stefan on 31.08.2016.
+ * Represents a User.
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
-public class User {
+public final class User {
 
     private static int userCounter = 0;
     private long id;
@@ -18,38 +18,58 @@ public class User {
     private Color color;
     private List<Debt> debts;
     //Image
-    private List<UserObserver> userObserverList;
+
+    private boolean checkboxEnabled;
 
     public User() {
-        this.userObserverList = new LinkedList<>();
         this.id = userCounter;
         userCounter++;
     }
 
-    public long getId() {
+    public final long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public final void setId(final long id) {
         this.id = id;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
-        userChanged();
     }
 
-    private void userChanged() {
-        for (UserObserver userObserver : userObserverList) {
-            userObserver.userChanged();
+    public final boolean isCheckboxEnabled() {
+        return checkboxEnabled;
+    }
+
+    public final void setCheckboxEnabled(final boolean checkboxEnabled) {
+        this.checkboxEnabled = checkboxEnabled;
+    }
+
+    @Override
+    public final boolean equals(final Object other) {
+
+        if (this == other) {
+            return true;
         }
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass() != this.getClass()) {
+            return false;
+        }
+        if (this.id != ((User) other).getId()) {
+            return false;
+        }
+        return true;
     }
 
-    public void addUserObserver(final UserObserver userObserver) {
-        this.userObserverList.add(userObserver);
+    @Override
+    public int hashCode() {
+        return (int) this.id;
     }
 }

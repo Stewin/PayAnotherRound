@@ -3,27 +3,31 @@ package net.ddns.swinterberger.payanotherround.entities;
 import java.util.List;
 
 /**
- * Created by Stefan on 18.09.2016.
+ * Represents a Trip.
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
-public class Trip {
+public final class Trip {
 
     private long id;
     private String name;
     private List<User> users;
     private List<Bill> bills;
 
-    public long getId() {
+    public final long getId() {
         return id;
     }
 
-    public void setId(final long id) {
+    public final void setId(final long id) {
         this.id = id;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
-    public void setName(final String name) {
+
+    public final void setName(final String name) {
         this.name = name;
     }
 }

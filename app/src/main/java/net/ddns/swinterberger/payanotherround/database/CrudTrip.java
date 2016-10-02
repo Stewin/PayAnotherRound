@@ -10,30 +10,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Stefan on 24.09.2016.
+ * Database Queries for the Trip Table.
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
-public class CrudTrip {
+public final class CrudTrip {
 
-    private final String TABLE_TRIP = "trip";
+    public static final String TABLE_TRIP = "trip";
+    public static final String ATTRIBUTE_ID = "id";
+    public static final String ATTRIBUTE_NAME = "name";
+
     private final SQLiteDatabase database;
 
 
-    public CrudTrip(final SQLiteDatabase database) {
+    CrudTrip(final SQLiteDatabase database) {
         this.database = database;
     }
 
-    public boolean createTrip(final Trip trip) {
+    public final long createTrip(final Trip trip) {
         final ContentValues values = new ContentValues();
-        values.put("name", trip.getName());
+        values.put(ATTRIBUTE_NAME, trip.getName());
         final long id = database.insert(TABLE_TRIP, null, values);
         trip.setId(id);
 
-        return id != -1;
+        return id;
     }
 
-    public Trip readTripById(final long id) {
+    public final Trip readTripById(final long id) {
         Trip trip = null;
-        final Cursor result = database.query(TABLE_TRIP, new String[]{"id", "name"}, "id =" + id,
+        final Cursor result = database.query(TABLE_TRIP, new String[]{ATTRIBUTE_ID, ATTRIBUTE_NAME}, "id =" + id,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
         if (found) {
@@ -43,10 +49,10 @@ public class CrudTrip {
         return trip;
     }
 
-    public List<Trip> readAllTrips() {
-        Trip trip = null;
+    public final List<Trip> readAllTrips() {
+        Trip trip;
         ArrayList<Trip> users = new ArrayList<>();
-        final Cursor result = database.query(TABLE_TRIP, new String[]{"id", "name"}, null,
+        final Cursor result = database.query(TABLE_TRIP, new String[]{ATTRIBUTE_ID, ATTRIBUTE_NAME}, null,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
@@ -65,13 +71,13 @@ public class CrudTrip {
         return user;
     }
 
-    public boolean updateTrip(final Trip user) {
+    public final boolean updateTrip(final Trip trip) {
         final ContentValues values = new ContentValues();
-        values.put("name", user.getName());
-        return database.update(TABLE_TRIP, values, "id = " + user.getId(), null) > 0;
+        values.put(ATTRIBUTE_NAME, trip.getName());
+        return database.update(TABLE_TRIP, values, ATTRIBUTE_ID + "=" + trip.getId(), null) > 0;
     }
 
-    public boolean deleteTripById(final long id) {
-        return database.delete(TABLE_TRIP, "id=" + id, null) > 0;
+    public final boolean deleteTripById(final long id) {
+        return database.delete(TABLE_TRIP, ATTRIBUTE_ID + "=" + id, null) > 0;
     }
 }

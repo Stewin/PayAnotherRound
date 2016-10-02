@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openTripSettings() {
-        startActivityForResult(new Intent(this, TripSettingsActivity.class), REQUEST_CODE_TRIPSETTINGS);
+        startActivityForResult(new Intent(this, TripChooserActivity.class), REQUEST_CODE_TRIPSETTINGS);
     }
 
     @Override
@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newReceiptClicked(final View v) {
-        startActivity(new Intent(this, CreateBill.class));
+        Intent intent = new Intent(this, CreateBill.class);
+        intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
+        startActivity(intent);
     }
 
     public void summaryClicked(final View v) {
