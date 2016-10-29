@@ -17,6 +17,8 @@ public final class DbAdapter {
     private CrudBill crudBill;
     private CrudTrip crudTrip;
     private CrudAttend crudAttend;
+    private CrudBillDebtors crudBillDebtor;
+    private CrudDebt crudDebt;
 
     private SQLiteDatabase db;
 
@@ -64,5 +66,21 @@ public final class DbAdapter {
             crudAttend = new CrudAttend(db);
         }
         return crudAttend;
+    }
+
+    public final CrudBillDebtors getCrudBillDebtor() {
+        open();
+        if (crudBillDebtor == null) {
+            crudBillDebtor = new CrudBillDebtors(db);
+        }
+        return crudBillDebtor;
+    }
+
+    public final CrudDebt getCrudDebt() {
+        open();
+        if (crudDebt == null) {
+            crudDebt = new CrudDebt(db);
+        }
+        return crudDebt;
     }
 }

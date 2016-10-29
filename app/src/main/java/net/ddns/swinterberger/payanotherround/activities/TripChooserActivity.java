@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround;
+package net.ddns.swinterberger.payanotherround.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
@@ -25,7 +26,6 @@ public class TripChooserActivity extends AppCompatActivity {
 
     private List<Trip> trips;
     private ListView tripList;
-
 
     private DbAdapter dbAdapter = new DbAdapter(this);
 
@@ -139,8 +139,8 @@ public class TripChooserActivity extends AppCompatActivity {
             if (convertView == null) {
                 convertView = TripChooserActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
 
-                TextView tripTirle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
-                tripTirle.setText(trips.get(position).getName());
+                TextView tripTitle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
+                tripTitle.setText(trips.get(position).getName());
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override

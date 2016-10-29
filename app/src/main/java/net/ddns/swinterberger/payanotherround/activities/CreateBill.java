@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround;
+package net.ddns.swinterberger.payanotherround.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,10 +15,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import net.ddns.swinterberger.payanotherround.R;
+import net.ddns.swinterberger.payanotherround.database.CrudBillDebtors;
+import net.ddns.swinterberger.payanotherround.database.CrudDebt;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
+import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,9 +64,34 @@ public class CreateBill extends AppCompatActivity {
     public final void onSaveButtonClicked(final View v) {
 
         Bill bill = createBillFromActivity();
+        long billId = dbAdapter.getCrudBill().createBill(bill);
 
+        CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
+        for (long debtorId : bill.getDebtorIds()) {
+            crudBillDebtors.createBillDebtor(billId, debtorId);
+        }
+
+        createDebtEntries(bill);
 
         finish();
+    }
+
+    private void createDebtEntries(Bill bill) {
+        long debtAmountPerDebtor = bill.getAmmount() / bill.getDebtorIds().size();
+
+        CrudDebt crudDebt = dbAdapter.getCrudDebt();
+        for (long debtorId : bill.getDebtorIds()) {
+
+            Debt debt = crudDebt.readDebtByPrimaryKey(bill.getPayerId(), debtorId);
+
+            if (debt == null) {
+                crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtor);
+            } else {
+                //TODO: Wenn den Creditor beim Debitor schon schulden hat, können diese erst abgezzogen werden.
+                debt.addAmount(debtAmountPerDebtor);
+                crudDebt.updateDebt(debt);
+            }
+        }
     }
 
     private Bill createBillFromActivity() {
@@ -92,13 +122,34 @@ public class CreateBill extends AppCompatActivity {
         newBill.setPayerId(getIdOfPayer());
 
         //Debtor
+        newBill.setDebtorIds(getIdsOfDebtors());
 
         return newBill;
     }
 
-    private int getIdOfPayer() {
-        //TODO: Get ID of the User who is marked (with Checkbox) as Payer.
+    private long getIdOfPayer() {
+        ListView userList = (ListView) findViewById(R.id.lv_users);
+        for (int i = 0; i < userList.getCount(); i++) {
+            View v = userList.getChildAt(i);
+            CheckBox cbPayer = (CheckBox) v.findViewById(R.id.cb_userbox);
+            if (cbPayer.isChecked()) {
+                return users.get(i).getId();
+            }
+        }
         return 0;
+    }
+
+    private List<Long> getIdsOfDebtors() {
+        List<Long> debtorIds = new ArrayList<>();
+        ListView userList = (ListView) findViewById(R.id.lv_users);
+        for (int i = 0; i < userList.getCount(); i++) {
+            View v = userList.getChildAt(i);
+            CheckBox cbDebtor = (CheckBox) v.findViewById(R.id.cb_userbox2);
+            if (cbDebtor.isChecked()) {
+                debtorIds.add(users.get(i).getId());
+            }
+        }
+        return debtorIds;
     }
 
     private class UserTwoCheckboxesListItemAdapter extends BaseAdapter {

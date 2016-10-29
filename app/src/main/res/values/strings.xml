@@ -13,4 +13,6 @@
     <string name="menu_entry_edit">Edit</string>
     <string name="extra_tripid" translatable="false">tripid</string>
     <string name="editTrip">Edit Trip</string>
+    <string name="lable_summary">Summary</string>
+    <string name="extra_userId">extra_user_id</string>
 </resources>

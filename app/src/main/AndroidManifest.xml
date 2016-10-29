@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,13 +18,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TripChooserActivity"
+            android:name=".activities.TripChooserActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateTrip"
+            android:name=".activities.CreateTrip"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateBill"
+            android:name=".activities.CreateBill"
             android:screenOrientation="portrait" />
+        <activity android:name=".activities.SummareyTripUsers"></activity>
+        <activity android:name=".activities.UserSummary"></activity>
     </application>
+
 </manifest>

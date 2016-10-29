@@ -5,13 +5,6 @@
     android:longClickable="true"
     android:weightSum="1">
 
-    <CheckBox
-        android:id="@+id/cb_userbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="5dp"
-        android:checked="true" />
 
     <ImageView
         android:id="@+id/iv_User"
@@ -25,12 +18,11 @@
         android:minWidth="75dp"
         android:src="@drawable/picture_user_default" />
 
-    <EditText
-        android:id="@+id/et_Name"
+    <TextView
+        android:id="@+id/tv_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|bottom"
-        android:hint="Name"
-        android:maxLines="1" />
+        android:text="TextView" />
 
 </LinearLayout>

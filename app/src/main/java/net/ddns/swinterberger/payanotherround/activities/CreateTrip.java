@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround;
+package net.ddns.swinterberger.payanotherround.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 import net.ddns.swinterberger.payanotherround.entities.User;

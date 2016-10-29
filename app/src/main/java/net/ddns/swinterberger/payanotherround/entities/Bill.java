@@ -17,9 +17,9 @@ public final class Bill {
     private Trip trip;
     private long tripId;
     private User payer;
-    private int payerId;
+    private long payerId;
     private List<User> debtors; //Schuldner
-    private List<Integer> debtorIds;
+    private List<Long> debtorIds;
 
     public final long getId() {
         return id;
@@ -69,11 +69,19 @@ public final class Bill {
         this.tripId = tripId;
     }
 
-    public int getPayerId() {
+    public long getPayerId() {
         return payerId;
     }
 
-    public void setPayerId(int payerId) {
+    public void setPayerId(long payerId) {
         this.payerId = payerId;
+    }
+
+    public List<Long> getDebtorIds() {
+        return debtorIds;
+    }
+
+    public void setDebtorIds(List<Long> debtorIds) {
+        this.debtorIds = debtorIds;
     }
 }

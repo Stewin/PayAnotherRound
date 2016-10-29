@@ -1,18 +1,28 @@
-package net.ddns.swinterberger.payanotherround;
+package net.ddns.swinterberger.payanotherround.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.entities.Bill;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MainActivity extends AppCompatActivity {
 
@@ -22,6 +32,8 @@ public final class MainActivity extends AppCompatActivity {
     private long currentTripId;
     private SharedPreferences preferences;
     private TextView tripTitle;
+    private ListView billList;
+    private List<Bill> bills;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
     private Trip currentTrip;
@@ -102,6 +114,10 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (currentTripId != 0) {
+            loadBills();
+            refreshList();
+        }
         dbAdapter.open();
     }
 
@@ -111,6 +127,21 @@ public final class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private void refreshList() {
+        if (this.billList == null) {
+            billList = (ListView) findViewById(R.id.lv_Bills);
+            registerForContextMenu(billList);
+        }
+        billList.setAdapter(new SimpleTripListItemAdapter());
+    }
+
+    private void loadBills() {
+        bills = dbAdapter.getCrudBill().readBillsByTripId(this.currentTripId);
+        if (bills == null) {
+            bills = new ArrayList<>();
+        }
+    }
+
     public void newReceiptClicked(final View v) {
         Intent intent = new Intent(this, CreateBill.class);
         intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
@@ -118,6 +149,68 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     public void summaryClicked(final View v) {
+        Intent intent = new Intent(this, SummareyTripUsers.class);
+        intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
+        startActivity(intent);
+    }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.lv_Bills) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.context_menu_bills, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.delete:
+                int position = ((AdapterView.AdapterContextMenuInfo) info).position;
+                long id = bills.get(position).getId();
+
+                dbAdapter.getCrudBill().deleteBillById(id);
+                for (Bill bill : bills) {
+                    if (bill.getId() == id) {
+                        bills.remove(bill);
+                    }
+                }
+                //TODO: Update Debt Table. Decrease the Bill Amount.
+                refreshList();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private class SimpleTripListItemAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return bills.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return bills.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return bills.get(position).getId();
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = MainActivity.this.getLayoutInflater().inflate(R.layout.listitem_bill_simple, null);
+
+                TextView billDescription = (TextView) convertView.findViewById(R.id.tv_billDescription);
+                billDescription.setText(bills.get(position).getDescription());
+            }
+            return convertView;
+        }
     }
 }
