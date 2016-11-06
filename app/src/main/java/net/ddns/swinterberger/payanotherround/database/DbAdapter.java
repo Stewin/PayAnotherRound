@@ -29,6 +29,7 @@ public final class DbAdapter {
     public final void open() {
         if (db == null || !db.isOpen()) {
             db = dbHelper.getWritableDatabase();
+            db.execSQL("PRAGMA foreign_keys=ON");
         }
     }
 

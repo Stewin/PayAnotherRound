@@ -16,23 +16,28 @@ import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.List;
 
-public class SummareyTripUsers extends AppCompatActivity {
+/**
+ * Activity to Create a Summary for all User of this Trip.
+ *
+ * @author Stefan Winteberger
+ * @version 1.0
+ */
+public final class SummaryTripUsers extends AppCompatActivity {
 
     private List<User> allUsers;
     private DbAdapter dbAdapter = new DbAdapter(this);
 
     private ListView userListView;
-    private TextView tvTripTitle;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summarey_trip_users);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        tvTripTitle = (TextView) findViewById(R.id.tv_TripTitle);
+        TextView tvTripTitle = (TextView) findViewById(R.id.tv_TripTitle);
         tvTripTitle.setText(getResources().getString(R.string.lable_summary));
 
         long tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1L);
@@ -47,7 +52,7 @@ public class SummareyTripUsers extends AppCompatActivity {
             userListView = (ListView) findViewById(R.id.lv_Users);
             registerForContextMenu(userListView);
         }
-        userListView.setAdapter(new SummareyTripUsers.UserSimpleListItemAdapter());
+        userListView.setAdapter(new SummaryTripUsers.UserSimpleListItemAdapter());
     }
 
     private class UserSimpleListItemAdapter extends BaseAdapter {
@@ -71,7 +76,7 @@ public class SummareyTripUsers extends AppCompatActivity {
         public View getView(final int position, final View convertView, final ViewGroup parent) {
             View returnView = convertView;
             if (returnView == null) {
-                returnView = SummareyTripUsers.this.getLayoutInflater().inflate(R.layout.listitem_user_simple, null);
+                returnView = SummaryTripUsers.this.getLayoutInflater().inflate(R.layout.listitem_user_simple, null);
 
                 TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
                 nameField.setText(allUsers.get(position).getName());
@@ -79,7 +84,7 @@ public class SummareyTripUsers extends AppCompatActivity {
                 returnView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(SummareyTripUsers.this, UserSummary.class);
+                        Intent intent = new Intent(SummaryTripUsers.this, UserSummary.class);
                         intent.putExtra(getResources().getString(R.string.extra_userId), allUsers.get(position).getId());
                         startActivity(intent);
                     }

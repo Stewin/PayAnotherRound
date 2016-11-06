@@ -1,7 +1,6 @@
 package net.ddns.swinterberger.payanotherround.activities;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,7 +31,7 @@ import java.util.List;
  * @author Stefan Winteberger
  * @version 1.0
  */
-public class CreateBill extends AppCompatActivity {
+public final class CreateBill extends AppCompatActivity {
 
     private List<User> users;
     private long tripId;
@@ -40,7 +39,7 @@ public class CreateBill extends AppCompatActivity {
     private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_bill);
@@ -77,18 +76,15 @@ public class CreateBill extends AppCompatActivity {
     }
 
     private void createDebtEntries(Bill bill) {
-        long debtAmountPerDebtor = bill.getAmmount() / bill.getDebtorIds().size();
-
+        int debtAmountPerDebtor = bill.getAmount() / bill.getDebtorIds().size();
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
+
         for (long debtorId : bill.getDebtorIds()) {
-
             Debt debt = crudDebt.readDebtByPrimaryKey(bill.getPayerId(), debtorId);
-
             if (debt == null) {
                 crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtor);
             } else {
-                //TODO: Wenn den Creditor beim Debitor schon schulden hat, können diese erst abgezzogen werden.
-                debt.addAmount(debtAmountPerDebtor);
+                debt.increaseAmount(debtAmountPerDebtor);
                 crudDebt.updateDebt(debt);
             }
         }
@@ -109,7 +105,7 @@ public class CreateBill extends AppCompatActivity {
         } catch (NumberFormatException nfe) {
             Log.e("NumberFormatException", nfe.toString());
         }
-        newBill.setAmmount(amount);
+        newBill.setAmount(amount);
 
         //Currency
         String currency = ((Spinner) findViewById(R.id.sp_Currency)).getSelectedItem().toString();
@@ -177,10 +173,6 @@ public class CreateBill extends AppCompatActivity {
 
                 TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
                 nameField.setText(users.get(position).getName());
-
-                CheckBox cbPayer = (CheckBox) findViewById(R.id.cb_userbox);
-
-                CheckBox cbDebtor = (CheckBox) findViewById(R.id.cb_userbox2);
             }
             return returnView;
         }

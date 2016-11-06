@@ -29,9 +29,7 @@ public final class CrudAttend {
         values.put(ATTRIBUTE_USER_ID, userId);
         values.put(ATTRIBUTE_TRIP_ID, tripId);
 
-        long id = database.insert(TABLE_ATTEND, null, values);
-
-        return id;
+        return database.insert(TABLE_ATTEND, null, values);
     }
 
     public final boolean deleteAttend(final long userId, final long tripId) {

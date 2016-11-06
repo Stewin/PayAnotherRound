@@ -23,7 +23,13 @@ import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.List;
 
-public class CreateTrip extends AppCompatActivity {
+/**
+ * Activity to Create new Trips.
+ *
+ * @author Stefan Winteberger
+ * @version 1.0
+ */
+public final class CreateTrip extends AppCompatActivity {
 
     private List<User> allUsers;
 
@@ -34,7 +40,7 @@ public class CreateTrip extends AppCompatActivity {
     private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trip);
 
@@ -72,9 +78,19 @@ public class CreateTrip extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 User user = new User();
+                user.setCheckboxEnabled(true);
                 allUsers.add(user);
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
+
+                //TODO: Make bill amount as Float
+                //TODO: BUGFIX focus Loss problem by enter the name
+
+                //TODO: Auto Select a new created Trip
+                //TODO: Add Different Currencies
+                //TODO: Fotos and Colors for user
+                //TODO: Reopen and edit bills
+
             }
         });
 
@@ -143,7 +159,8 @@ public class CreateTrip extends AppCompatActivity {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public final void onCreateContextMenu(final ContextMenu menu, final View v,
+                                          final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.lv_Users) {
             MenuInflater inflater = getMenuInflater();
@@ -152,7 +169,7 @@ public class CreateTrip extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public final boolean onContextItemSelected(final MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.delete:
@@ -171,28 +188,36 @@ public class CreateTrip extends AppCompatActivity {
         }
     }
 
+    @Override
+    public final void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+    }
+
     private class UserOneCheckboxListItemAdapter extends BaseAdapter {
 
         @Override
-        public int getCount() {
+        public final int getCount() {
             return allUsers.size();
         }
 
         @Override
-        public Object getItem(final int position) {
+        public final Object getItem(final int position) {
             return allUsers.get(position);
         }
 
         @Override
-        public long getItemId(final int position) {
+        public final long getItemId(final int position) {
             return allUsers.get(position).getId();
         }
 
         @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
+        public final View getView(final int position, final View convertView,
+                                  final ViewGroup parent) {
             View returnView = convertView;
             if (returnView == null) {
-                returnView = CreateTrip.this.getLayoutInflater().inflate(R.layout.listitem_user_one_checkbox, null);
+                returnView = CreateTrip.this.getLayoutInflater()
+                        .inflate(R.layout.listitem_user_one_checkbox, null);
 
                 EditText nameField = (EditText) returnView.findViewById(R.id.et_Name);
                 nameField.setText(allUsers.get(position).getName());

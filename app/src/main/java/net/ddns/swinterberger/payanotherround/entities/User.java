@@ -62,10 +62,7 @@ public final class User {
         if (other.getClass() != this.getClass()) {
             return false;
         }
-        if (this.id != ((User) other).getId()) {
-            return false;
-        }
-        return true;
+        return this.id == ((User) other).getId();
     }
 
     @Override

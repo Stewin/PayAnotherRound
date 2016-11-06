@@ -12,4 +12,8 @@
     <string name="lable_no_trip_selected">Kei Trip usgwählt</string>
     <string name="menu_entry_delete">Löschä</string>
     <string name="menu_entry_edit">Bearbeitä</string>
+    <string name="lable_no">Nei</string>
+    <string name="lable_summary">Zämefassig</string>
+    <string name="lable_yes">Ja</string>
+    <string name="text_no_trip_selected">Kei Trips vorhandä. Wetsch du zu Tripihstellige wächsle fürnä neue Trip zerstelle?</string>
 </resources>

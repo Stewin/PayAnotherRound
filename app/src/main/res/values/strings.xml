@@ -14,5 +14,10 @@
     <string name="extra_tripid" translatable="false">tripid</string>
     <string name="editTrip">Edit Trip</string>
     <string name="lable_summary">Summary</string>
-    <string name="extra_userId">extra_user_id</string>
+    <string name="extra_userId" translatable="false">extra_user_id</string>
+    <string name="text_no_trip_selected">No Trips available, do you like to change to the Trip Settings to create a Trip?</string>
+    <string name="lable_yes">Yes</string>
+    <string name="lable_no">No</string>
+    <string name="title">Title</string>
+    <string name="name">Name</string>
 </resources>

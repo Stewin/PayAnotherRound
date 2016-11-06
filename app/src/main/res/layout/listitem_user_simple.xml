@@ -22,7 +22,6 @@
         android:id="@+id/tv_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|bottom"
-        android:text="TextView" />
+        android:layout_gravity="center_vertical|bottom" />
 
 </LinearLayout>

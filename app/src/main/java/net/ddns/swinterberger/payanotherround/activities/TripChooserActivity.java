@@ -22,7 +22,13 @@ import net.ddns.swinterberger.payanotherround.entities.Trip;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TripChooserActivity extends AppCompatActivity {
+/**
+ * Activity to choose a Trip.
+ *
+ * @author Stefan Winteberger
+ * @version 1.0
+ */
+public final class TripChooserActivity extends AppCompatActivity {
 
     private List<Trip> trips;
     private ListView tripList;
@@ -30,7 +36,7 @@ public class TripChooserActivity extends AppCompatActivity {
     private DbAdapter dbAdapter = new DbAdapter(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_chooser);
 
@@ -76,7 +82,8 @@ public class TripChooserActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public final void onCreateContextMenu(final ContextMenu menu, final View v,
+                                          final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.lv_TripList) {
             MenuInflater inflater = getMenuInflater();
@@ -85,8 +92,9 @@ public class TripChooserActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+    public final boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         int position = info.position;
         long id = trips.get(position).getId();
@@ -108,6 +116,7 @@ public class TripChooserActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                dbAdapter.getCrudBill().deleteBillByTripId(id);
                 refreshList();
                 break;
 
@@ -120,24 +129,26 @@ public class TripChooserActivity extends AppCompatActivity {
     private class SimpleTripListItemAdapter extends BaseAdapter {
 
         @Override
-        public int getCount() {
+        public final int getCount() {
             return trips.size();
         }
 
         @Override
-        public Object getItem(int position) {
+        public final Object getItem(int position) {
             return trips.get(position);
         }
 
         @Override
-        public long getItemId(int position) {
+        public final long getItemId(int position) {
             return trips.get(position).getId();
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public final View getView(final int position, View convertView,
+                                  final ViewGroup parent) {
             if (convertView == null) {
-                convertView = TripChooserActivity.this.getLayoutInflater().inflate(R.layout.listitem_trip_simple, null);
+                convertView = TripChooserActivity.this.getLayoutInflater()
+                        .inflate(R.layout.listitem_trip_simple, null);
 
                 TextView tripTitle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
                 tripTitle.setText(trips.get(position).getName());

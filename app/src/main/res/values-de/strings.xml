@@ -10,8 +10,11 @@
     <string name="title_trip_settings">Trip Auswahl</string>
     <string name="button_save">Speichern</string>
     <string name="editTrip">Trip bearbeiten</string>
-    <string name="extra_tripid"></string>
     <string name="lable_no_trip_selected">Kein Trip ausgewählt</string>
     <string name="menu_entry_delete">Löschen</string>
     <string name="menu_entry_edit">Bearbeiten</string>
+    <string name="lable_no">Nein</string>
+    <string name="lable_summary">Zusammenfassung</string>
+    <string name="lable_yes">Ja</string>
+    <string name="text_no_trip_selected">Keine Trips vorhanden. Möchten Sie zu den Tripeinstellungen wechseln um einen Trip zu erfassen?</string>
 </resources>

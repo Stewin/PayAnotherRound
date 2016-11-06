@@ -18,12 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Stefan on 29.10.2016.
+ * Activity to Create a Summary for a User.
+ *
+ * @author Stefan Winteberger
+ * @version 1.0
  */
 public final class UserSummary extends AppCompatActivity {
 
-    private User user;
-    private TextView tvUserName;
     private ListView userListView;
     private List<Debt> debts;
     private List<User> debtors = new ArrayList<>();
@@ -39,11 +40,11 @@ public final class UserSummary extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        long userId = getIntent().getLongExtra(getResources().getString(R.string.extra_userId), -1l);
-        this.user = dbAdapter.getCrudUser().readUserById(userId);
+        long userId = getIntent().getLongExtra(getResources().getString(R.string.extra_userId), -1L);
+        User user = dbAdapter.getCrudUser().readUserById(userId);
 
 
-        tvUserName = (TextView) findViewById(R.id.tv_UserName);
+        TextView tvUserName = (TextView) findViewById(R.id.tv_UserName);
         tvUserName.setText(user.getName());
 
         collectUserDebtsFor(userId);
@@ -51,11 +52,16 @@ public final class UserSummary extends AppCompatActivity {
     }
 
     private void collectUserDebtsFor(long userId) {
+
+
         debts = dbAdapter.getCrudDebt().readDebtByCreditorId(userId);
 
         for (Debt debt : debts) {
-            User debtor = dbAdapter.getCrudUser().readUserById(debt.getDebitorId());
+            User debtor = dbAdapter.getCrudUser().readUserById(debt.getDebtorId());
             debtors.add(debtor);
+
+            //Im Summary des Users sollen Schulden und Guthaben angezeigt werden.
+            debt.decreaseAmount(dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId).getAmount());
         }
     }
 
@@ -80,7 +86,7 @@ public final class UserSummary extends AppCompatActivity {
 
         @Override
         public long getItemId(final int position) {
-            return Long.parseLong(debts.get(position).getCreditorId() + "" + debts.get(position).getDebitorId());
+            return Long.parseLong(debts.get(position).getCreditorId() + "" + debts.get(position).getDebtorId());
         }
 
         @Override
@@ -95,10 +101,12 @@ public final class UserSummary extends AppCompatActivity {
                 tvName.setText(debtors.get(position).getName());
 
                 TextView tvAmmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmmount);
-                tvAmmount.setText(String.valueOf(debts.get(position).getAmmount()));
+                tvAmmount.setText(String.valueOf(debts.get(position).getAmount()));
 
             }
             return returnView;
+
+            //TODO: OnLongClick Delete payed Debts andupdate DB.
         }
     }
 }

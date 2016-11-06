@@ -10,16 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Stefan on 29.10.2016.
+ * Database Queries for the Relation Table between User and User with a debt amount.
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
+public final class CrudDebt {
 
-public class CrudDebt {
+    private static final String TABLE_DEBT = "debt";
 
-    public static final String TABLE_DEBT = "debt";
-
-    public static final String ATTRIBUTE_CREDITOR = "fk_creditor";
-    public static final String ATTRIBUTE_DEBTOR = "fk_debtor";
-    public static final String ATTRIBUTE_AMOUNT = "amount";
+    private static final String ATTRIBUTE_CREDITOR = "fk_creditor";
+    private static final String ATTRIBUTE_DEBTOR = "fk_debtor";
+    private static final String ATTRIBUTE_AMOUNT = "amount";
 
 
     private final SQLiteDatabase database;
@@ -28,18 +30,16 @@ public class CrudDebt {
         this.database = database;
     }
 
-    public final long createDebt(final long creditorId, long debtorId, long amount) {
+    public final long createDebt(final long creditorId, final long debtorId, final float amount) {
         ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_CREDITOR, creditorId);
         values.put(ATTRIBUTE_DEBTOR, debtorId);
         values.put(ATTRIBUTE_AMOUNT, amount);
 
-        long id = database.insert(TABLE_DEBT, null, values);
-
-        return id;
+        return database.insert(TABLE_DEBT, null, values);
     }
 
-    public final Debt readDebtByPrimaryKey(long creditorId, long debtorId) {
+    public final Debt readDebtByPrimaryKey(final long creditorId, final long debtorId) {
 
         Debt debt = null;
         final Cursor result = database.query(TABLE_DEBT,
@@ -56,23 +56,22 @@ public class CrudDebt {
 
     private Debt getNextDebt(final Cursor cursor) {
 
-        int creditoId = cursor.getInt(0);
+        int creditorId = cursor.getInt(0);
         int debtorId = cursor.getInt(1);
         int amount = cursor.getInt(2);
         cursor.moveToNext();
 
-        final Debt debt = new Debt(creditoId, debtorId, amount);
-        return debt;
+        return new Debt(creditorId, debtorId, amount);
     }
 
-    public boolean updateDebt(final Debt debt) {
+    public final boolean updateDebt(final Debt debt) {
         final ContentValues values = new ContentValues();
-        values.put(ATTRIBUTE_AMOUNT, debt.getAmmount());
+        values.put(ATTRIBUTE_AMOUNT, debt.getAmount());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
-                + ATTRIBUTE_DEBTOR + " = " + debt.getDebitorId(), null) > 0;
+                + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
     }
 
-    public List<Debt> readDebtByCreditorId(long userId) {
+    public final List<Debt> readDebtByCreditorId(final long userId) {
         Debt debt;
         List<Debt> debts = new ArrayList<>();
 

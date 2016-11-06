@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="net.ddns.swinterberger.payanotherround.activities.SummareyTripUsers">
+    tools:context="net.ddns.swinterberger.payanotherround.activities.SummaryTripUsers">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -25,8 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/my_toolbar"
-        android:hint="Title"
-        android:inputType="text" />
+        android:hint="@string/title" />
 
     <ListView
         android:id="@+id/lv_Users"

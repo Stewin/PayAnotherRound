@@ -26,7 +26,7 @@
         <activity
             android:name=".activities.CreateBill"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.SummareyTripUsers"></activity>
+        <activity android:name=".activities.SummaryTripUsers"></activity>
         <activity android:name=".activities.UserSummary"></activity>
     </application>
 

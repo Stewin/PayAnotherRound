@@ -1,7 +1,11 @@
 package net.ddns.swinterberger.payanotherround.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Database Queries for the Relation Table between Users (as Debtors) and Bills. (n:m-Relationship)
@@ -9,13 +13,12 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Stefan Winterberger
  * @version 1.0
  */
+public final class CrudBillDebtors {
 
-public class CrudBillDebtors {
+    private static final String TABLE_BILL_DEBTORS = "bill_debtors";
 
-    public static final String TABLE_BILL_DEBTORS = "bill_debtors";
-
-    public static final String ATTRIBUTE_BILL_ID = "fk_bill";
-    public static final String ATTRIBUTE_USER_ID = "fk_user";
+    private static final String ATTRIBUTE_BILL_ID = "fk_bill";
+    private static final String ATTRIBUTE_USER_ID = "fk_user";
 
 
     private final SQLiteDatabase database;
@@ -29,8 +32,28 @@ public class CrudBillDebtors {
         values.put(ATTRIBUTE_BILL_ID, billId);
         values.put(ATTRIBUTE_USER_ID, userId);
 
-        long id = database.insert(TABLE_BILL_DEBTORS, null, values);
+        return database.insert(TABLE_BILL_DEBTORS, null, values);
+    }
 
-        return id;
+    public List<Long> readDebtorsByBillId(final long billId) {
+        long user;
+        ArrayList<Long> users = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_BILL_DEBTORS,
+                new String[]{ATTRIBUTE_BILL_ID, ATTRIBUTE_USER_ID},
+                ATTRIBUTE_BILL_ID + "=" + billId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            user = result.getLong(1);
+            users.add(user);
+            result.moveToNext();
+        }
+        result.close();
+        return users;
+    }
+
+    public boolean deleteBillDebtorByBillId(final long billId) {
+        return database.delete(TABLE_BILL_DEBTORS, ATTRIBUTE_BILL_ID + "=" + billId, null) > 0;
     }
 }

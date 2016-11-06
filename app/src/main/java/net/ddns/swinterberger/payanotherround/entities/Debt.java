@@ -1,33 +1,40 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
 /**
- * Created by Stefan on 18.09.2016.
+ * Represents a Debt from a User to Another (Relationship Table).
+ *
+ * @author Stefan Winterberger
+ * @version 1.0
  */
 public final class Debt {
 
     private long creditorId;
-    private long debitorId;
-    private long ammount;
+    private long debtorId;
+    private int amount;
 
-    public Debt(long creditorId, long debitorId, long ammount) {
+    public Debt(long creditorId, long debtorId, int amount) {
         this.creditorId = creditorId;
-        this.debitorId = debitorId;
-        this.ammount = ammount;
+        this.debtorId = debtorId;
+        this.amount = amount;
     }
 
-    public long getAmmount() {
-        return ammount;
+    public int getAmount() {
+        return amount;
     }
 
-    public final void addAmount(final long amount) {
-        this.ammount += amount;
+    public final void increaseAmount(final float amount) {
+        this.amount += amount;
+    }
+
+    public final void decreaseAmount(final float amount) {
+        this.amount -= amount;
     }
 
     public long getCreditorId() {
         return creditorId;
     }
 
-    public long getDebitorId() {
-        return debitorId;
+    public long getDebtorId() {
+        return debtorId;
     }
 }

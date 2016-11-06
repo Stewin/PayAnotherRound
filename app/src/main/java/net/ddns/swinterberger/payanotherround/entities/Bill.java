@@ -12,7 +12,7 @@ public final class Bill {
 
     private long id;
     private String description;
-    private int ammount;
+    private int amount;
     private String currency; //Währung
     private Trip trip;
     private long tripId;
@@ -37,12 +37,12 @@ public final class Bill {
         this.description = description;
     }
 
-    public final int getAmmount() {
-        return ammount;
+    public final int getAmount() {
+        return amount;
     }
 
-    public final void setAmmount(final int ammount) {
-        this.ammount = ammount;
+    public final void setAmount(final int amount) {
+        this.amount = amount;
     }
 
     public final String getCurrency() {

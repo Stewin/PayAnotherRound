@@ -19,7 +19,7 @@ public final class CrudBill {
 
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_DESCRIPTION = "description";
-    private static final String ATTRIBUTE_AMMOUNT = "amount";
+    private static final String ATTRIBUTE_AMOUNT = "amount";
     private static final String ATTRIBUTE_CURRENCY = "currency";
     private static final String ATTRIBUTE_FK_TRIP = "fk_trip";
     private static final String ATTRIBUTE_FK_PAYERID = "fk_payer";
@@ -34,7 +34,7 @@ public final class CrudBill {
     public long createBill(final Bill bill) {
         final ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_DESCRIPTION, bill.getDescription());
-        values.put(ATTRIBUTE_AMMOUNT, bill.getAmmount());
+        values.put(ATTRIBUTE_AMOUNT, bill.getAmount());
         values.put(ATTRIBUTE_CURRENCY, bill.getCurrency());
         values.put(ATTRIBUTE_FK_TRIP, bill.getTripId());
         values.put(ATTRIBUTE_FK_PAYERID, bill.getPayerId());
@@ -46,7 +46,8 @@ public final class CrudBill {
 
     public Bill readBillById(final long id) {
         Bill bill = null;
-        final Cursor result = database.query(TABLE_BILL, new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION}, ATTRIBUTE_ID + id,
+        final Cursor result = database.query(TABLE_BILL, new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                ATTRIBUTE_ID + "=" + id,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
         if (found) {
@@ -60,8 +61,10 @@ public final class CrudBill {
         Bill bill;
         ArrayList<Bill> bills = new ArrayList<>();
 
-        final Cursor result = database.query(TABLE_BILL, new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION},
-                ATTRIBUTE_FK_TRIP + " = " + tripId, null, null, null, null);
+        final Cursor result = database.query(TABLE_BILL,
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                ATTRIBUTE_FK_TRIP + " = " + tripId,
+                null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
             bill = getNextBill(result);
@@ -75,8 +78,9 @@ public final class CrudBill {
     public List<Bill> readAllBills() {
         Bill bill;
         ArrayList<Bill> bills = new ArrayList<>();
-        final Cursor result = database.query(TABLE_BILL, new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION}, null,
-                null, null, null, null);
+        final Cursor result = database.query(TABLE_BILL,
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                null, null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
             bill = getNextBill(result);
@@ -87,11 +91,14 @@ public final class CrudBill {
     }
 
     private Bill getNextBill(final Cursor cursor) {
-        final Bill user = new Bill();
-        user.setId(cursor.getLong(0));
-        user.setDescription(cursor.getString(1));
+        final Bill bill = new Bill();
+        bill.setId(cursor.getLong(0));
+        bill.setDescription(cursor.getString(1));
+        bill.setAmount(cursor.getInt(2));
+        bill.setPayerId(cursor.getInt(3));
+        bill.setTripId(cursor.getInt(4));
         cursor.moveToNext();
-        return user;
+        return bill;
     }
 
     public boolean updateBill(final Bill user) {
@@ -102,5 +109,9 @@ public final class CrudBill {
 
     public boolean deleteBillById(final long id) {
         return database.delete(TABLE_BILL, ATTRIBUTE_ID + "=" + id, null) > 0;
+    }
+
+    public boolean deleteBillByTripId(final long tripId) {
+        return database.delete(TABLE_BILL, ATTRIBUTE_FK_TRIP + "=" + tripId, null) > 0;
     }
 }
