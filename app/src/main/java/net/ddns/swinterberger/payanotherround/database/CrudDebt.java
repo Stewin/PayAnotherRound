@@ -88,4 +88,40 @@ public final class CrudDebt {
 
         return debts;
     }
+
+    public final List<Debt> readDebtsContainsUser(final long userId) {
+        Debt debt;
+        List<Debt> debts = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_DEBT,
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
+                ATTRIBUTE_CREDITOR + "=" + userId + "OR" + ATTRIBUTE_DEBTOR + "=" + userId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            debt = getNextDebt(result);
+            debts.add(debt);
+        }
+        result.close();
+
+        return debts;
+    }
+
+    public List<Debt> readDebtByDebtorId(final long userId) {
+        Debt debt;
+        List<Debt> debts = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_DEBT,
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
+                ATTRIBUTE_DEBTOR + "=" + userId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            debt = getNextDebt(result);
+            debts.add(debt);
+        }
+        result.close();
+
+        return debts;
+    }
 }

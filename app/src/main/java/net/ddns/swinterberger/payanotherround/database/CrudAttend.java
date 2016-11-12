@@ -36,4 +36,9 @@ public final class CrudAttend {
         int rowsAffected = database.delete(TABLE_ATTEND, userId + " = " + ATTRIBUTE_USER_ID + " AND " + tripId + " = " + ATTRIBUTE_TRIP_ID, null);
         return rowsAffected > 0;
     }
+
+    public boolean deleteAttendByTripId(final long tripId) {
+        int rowsAffected = database.delete(TABLE_ATTEND, tripId + " = " + ATTRIBUTE_TRIP_ID, null);
+        return rowsAffected > 0;
+    }
 }

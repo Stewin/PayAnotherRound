@@ -83,14 +83,15 @@ public final class CreateTrip extends AppCompatActivity {
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
 
-                //TODO: Make bill amount as Float
+                //TODO: Add decimal Values to the amount. But as int not as float.
                 //TODO: BUGFIX focus Loss problem by enter the name
 
                 //TODO: Auto Select a new created Trip
-                //TODO: Add Different Currencies
+                //TODO: Add Different Currencies + Options for Currencie calculation
                 //TODO: Fotos and Colors for user
                 //TODO: Reopen and edit bills
-
+                //TODO: Evtl. Kosten prozentual aufteilen
+                //TODO: Testen stabilisieren (Fehleingaben etc.)
             }
         });
 
@@ -175,6 +176,11 @@ public final class CreateTrip extends AppCompatActivity {
             case R.id.delete:
                 int position = ((AdapterView.AdapterContextMenuInfo) info).position;
                 long id = allUsers.get(position).getId();
+
+                //TODO: BUGFIX deleting User.
+                //Delete existing Bills
+                //Delete existing attends
+                //Delete existing debts
                 dbAdapter.getCrudUser().deleteUserById(id);
                 for (User user : allUsers) {
                     if (user.getId() == id) {

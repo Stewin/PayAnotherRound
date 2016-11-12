@@ -109,7 +109,7 @@ public final class TripChooserActivity extends AppCompatActivity {
                 break;
 
             case R.id.delete:
-                dbAdapter.getCrudTrip().deleteTripById(id);
+
                 for (Trip trip : trips) {
                     if (trip.getId() == id) {
                         trips.remove(trip);
@@ -117,6 +117,8 @@ public final class TripChooserActivity extends AppCompatActivity {
                     }
                 }
                 dbAdapter.getCrudBill().deleteBillByTripId(id);
+                dbAdapter.getCrudAttend().deleteAttendByTripId(id);
+                dbAdapter.getCrudTrip().deleteTripById(id);
                 refreshList();
                 break;
 

@@ -1,23 +1,29 @@
 package net.ddns.swinterberger.payanotherround.activities;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
@@ -90,15 +96,51 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.actionbaritem_settings:
+            case R.id.actionbaritem_trip_settings:
                 openTripSettings();
                 return true;
 
+            case R.id.menuItemSettings:
+                Intent intent = new Intent(MainActivity.this, UserPreferenceActivity.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.menuItemAbout:
+                showAboutDialog();
+                return true;
+
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    private void showAboutDialog() {
+        final Dialog aboutDialog = new Dialog(this);
+        aboutDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        aboutDialog.setContentView(R.layout.main_about);
+
+        TextView aboutTitle = (TextView) aboutDialog.findViewById(R.id.tv_AboutTitle);
+
+        String appVersion = "";
+        try {
+            appVersion = this.getPackageManager().getPackageInfo(
+                    this.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(MainActivity.class.toString(), e.getMessage());
+        }
+
+        String title = getResources().getString(R.string.app_name) + " - " + appVersion;
+        aboutTitle.setText(title);
+
+        final Button button = (Button) aboutDialog
+                .findViewById(R.id.ok_Button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                aboutDialog.dismiss();
+            }
+        });
+        aboutDialog.show();
     }
 
     private void openTripSettings() {
@@ -157,9 +199,13 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     public void newReceiptClicked(final View v) {
-        Intent intent = new Intent(this, CreateBill.class);
-        intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
-        startActivity(intent);
+        if (currentTripId == -1) {
+            Toast.makeText(this, "Bitte Trip wählen oder erstellen.", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, CreateBill.class);
+            intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
+            startActivity(intent);
+        }
     }
 
     public void summaryClicked(final View v) {

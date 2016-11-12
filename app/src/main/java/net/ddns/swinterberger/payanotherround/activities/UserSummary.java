@@ -51,8 +51,9 @@ public final class UserSummary extends AppCompatActivity {
         refreshListView();
     }
 
-    private void collectUserDebtsFor(long userId) {
+    private void collectUserDebtsFor(final long userId) {
 
+        //TODO: Anderen Ansatz wählen. Für jeden Benutzer der dem Trip zugeordnet ist... (Attend Tabelle)
 
         debts = dbAdapter.getCrudDebt().readDebtByCreditorId(userId);
 
@@ -60,8 +61,25 @@ public final class UserSummary extends AppCompatActivity {
             User debtor = dbAdapter.getCrudUser().readUserById(debt.getDebtorId());
             debtors.add(debtor);
 
-            //Im Summary des Users sollen Schulden und Guthaben angezeigt werden.
-            debt.decreaseAmount(dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId).getAmount());
+            Debt debt1 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId);
+            if (debt1 != null) {
+                int debtAmount = debt1.getAmount();
+                debt.decreaseAmount(debtAmount);
+            }
+        }
+
+
+        //Add Entries where the current User is Debtor and have no Credits.
+        List<Debt> debts2 = dbAdapter.getCrudDebt().readDebtByDebtorId(userId);
+
+        for (Debt debt : debts2) {
+
+            User creditorOfDebt = dbAdapter.getCrudUser().readUserById(debt.getCreditorId());
+
+            if (!debtors.contains(creditorOfDebt)) {
+                debtors.add(creditorOfDebt);
+                debts.add(new Debt(userId, creditorOfDebt.getId(), -debt.getAmount()));
+            }
         }
     }
 
