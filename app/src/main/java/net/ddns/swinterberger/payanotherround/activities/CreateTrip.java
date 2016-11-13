@@ -84,10 +84,8 @@ public final class CreateTrip extends AppCompatActivity {
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
 
-                //TODO: Add decimal Values to the amount. But as int not as float.
-                //TODO: BUGFIX focus Loss problem by enter the name
-
                 //TODO: Add Different Currencies + Options for Currencie calculation
+                //TODO: BUGFIX focus Loss problem by enter the name
                 //TODO: Fotos and Colors for user
                 //TODO: Reopen and edit bills
                 //TODO: Evtl. Kosten prozentual aufteilen

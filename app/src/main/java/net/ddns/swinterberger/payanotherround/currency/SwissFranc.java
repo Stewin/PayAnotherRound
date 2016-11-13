@@ -8,6 +8,7 @@ package net.ddns.swinterberger.payanotherround.currency;
  */
 public final class SwissFranc implements Currency {
 
+    public static final String CURRENCY_ABREVIATION = "CHF";
     private int franc; //Franken
     private int centime; //Rappen
 
@@ -61,6 +62,11 @@ public final class SwissFranc implements Currency {
     public final void subtractAmount(final int franc, final int centime) {
         subtractFranc(franc);
         subtractCentime(centime);
+    }
+
+    @Override
+    public void divideByUsers(int numberOsers) {
+
     }
 
     private void normalizeCentime() {

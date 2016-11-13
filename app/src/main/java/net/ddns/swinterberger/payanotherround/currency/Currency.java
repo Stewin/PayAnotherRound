@@ -13,4 +13,6 @@ public interface Currency {
     void addAmount(int franc, int centime);
 
     void subtractAmount(int franc, int centime);
+
+    void divideByUsers(int numberOsers);
 }

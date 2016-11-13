@@ -24,7 +24,7 @@
         android:layout_toEndOf="@+id/iv_User" />
 
     <TextView
-        android:id="@+id/tv_DebtingAmmount"
+        android:id="@+id/tv_DebtingAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/iv_User"

@@ -22,28 +22,42 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/et_BillAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:ems="10"
-            android:inputType="number" />
+        android:layout_height="wrap_content">
 
         <Spinner
             android:id="@+id/sp_Currency"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true" />
+
+        <EditText
+            android:id="@+id/et_BillAmountDecimal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_toStartOf="@id/sp_Currency"
+            android:ems="5"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/tv_DecimalPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/et_BillAmountDecimal"
+            android:layout_toStartOf="@id/et_BillAmountDecimal"
+            android:text="." />
+
+        <EditText
+            android:id="@+id/et_BillAmountInteger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="bottom"
+            android:layout_toStartOf="@id/tv_DecimalPoint"
+            android:ems="10"
+            android:inputType="number" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

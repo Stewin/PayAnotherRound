@@ -69,15 +69,14 @@ public final class CreateBill extends AppCompatActivity {
         for (long debtorId : bill.getDebtorIds()) {
             crudBillDebtors.createBillDebtor(billId, debtorId);
         }
-
         createDebtEntries(bill);
 
         finish();
     }
 
     private void createDebtEntries(Bill bill) {
-        int debtAmountPerDebtorInteger = bill.getAmount() / bill.getDebtorIds().size();
-        int debtAmountPerDebtorDecimal = bill.getAmount() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorInteger = bill.getAmountInteger() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorDecimal = bill.getAmountDecimal() / bill.getDebtorIds().size();
 
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
 
@@ -87,6 +86,7 @@ public final class CreateBill extends AppCompatActivity {
                 crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtorInteger, debtAmountPerDebtorDecimal);
             } else {
                 debt.increaseAmountIntegerPart(debtAmountPerDebtorInteger);
+                debt.increaseAmountDecimalPart(debtAmountPerDebtorDecimal);
                 crudDebt.updateDebt(debt);
             }
         }
@@ -99,15 +99,25 @@ public final class CreateBill extends AppCompatActivity {
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
         newBill.setDescription(description);
 
-        //Amount
-        EditText amountField = (EditText) findViewById(R.id.et_BillAmount);
-        int amount = 0;
+        //AmountInteger
+        EditText amountFieldInteger = (EditText) findViewById(R.id.et_BillAmountInteger);
+        int amountInteger = 0;
         try {
-            amount = Integer.parseInt(amountField.getText().toString());
+            amountInteger = Integer.parseInt(amountFieldInteger.getText().toString());
         } catch (NumberFormatException nfe) {
             Log.e("NumberFormatException", nfe.toString());
         }
-        newBill.setAmount(amount);
+        newBill.setAmountInteger(amountInteger);
+
+        //AmmountDecimal
+        EditText amountFieldDecimal = (EditText) findViewById(R.id.et_BillAmountDecimal);
+        int amountDecimal = 0;
+        try {
+            amountDecimal = Integer.parseInt(amountFieldDecimal.getText().toString());
+        } catch (NumberFormatException nfe) {
+            Log.e("NumberFormatException", nfe.toString());
+        }
+        newBill.setAmountDecimal(amountDecimal);
 
         //Currency
         String currency = ((Spinner) findViewById(R.id.sp_Currency)).getSelectedItem().toString();

@@ -44,7 +44,6 @@ public final class SummaryTripUsers extends AppCompatActivity {
         allUsers = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
         refreshList();
-
     }
 
     private void refreshList() {

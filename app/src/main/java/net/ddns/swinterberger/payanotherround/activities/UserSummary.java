@@ -118,13 +118,14 @@ public final class UserSummary extends AppCompatActivity {
                 TextView tvName = (TextView) returnView.findViewById(R.id.tv_CreditorName);
                 tvName.setText(debtors.get(position).getName());
 
-                TextView tvAmmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmmount);
-                tvAmmount.setText(String.valueOf(debts.get(position).getAmountIntegerPart()));
+                TextView tvAmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmount);
+                String amountAsString = String.valueOf(debts.get(position).getAmountIntegerPart()) + "." + String.valueOf(debts.get(position).getAmountDecimalPart());
+                tvAmount.setText(amountAsString);
 
             }
             return returnView;
 
-            //TODO: OnLongClick Delete payed Debts andupdate DB.
+            //TODO: OnLongClick Delete payed Debts and update DB.
         }
     }
 }

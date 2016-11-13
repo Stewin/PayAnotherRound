@@ -1,5 +1,7 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
+import net.ddns.swinterberger.payanotherround.currency.Currency;
+
 import java.util.List;
 
 /**
@@ -12,6 +14,7 @@ public final class Bill {
 
     private long id;
     private String description;
+    private Currency amount;
     private int amountInteger;
     private int amountDecimal;
     private String currency; //Währung
@@ -38,11 +41,11 @@ public final class Bill {
         this.description = description;
     }
 
-    public final int getAmount() {
+    public final int getAmountInteger() {
         return amountInteger;
     }
 
-    public final void setAmount(final int amount) {
+    public final void setAmountInteger(final int amount) {
         this.amountInteger = amount;
     }
 

@@ -21,4 +21,9 @@ public final class UsDollar implements Currency {
     public void subtractAmount(int franc, int centime) {
 
     }
+
+    @Override
+    public void divideByUsers(int numberOsers) {
+
+    }
 }
