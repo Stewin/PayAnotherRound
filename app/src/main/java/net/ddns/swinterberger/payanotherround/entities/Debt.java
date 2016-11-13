@@ -10,31 +10,38 @@ public final class Debt {
 
     private long creditorId;
     private long debtorId;
-    private int amount;
+    private int amountIntegerPart;
+    private int amountDecimalPart;
 
-    public Debt(long creditorId, long debtorId, int amount) {
+    public Debt(final long creditorId, final long debtorId,
+                final int amountIntegerPart, final int amountDecimalPart) {
         this.creditorId = creditorId;
         this.debtorId = debtorId;
-        this.amount = amount;
+        this.amountIntegerPart = amountIntegerPart;
+        this.amountDecimalPart = amountDecimalPart;
     }
 
-    public int getAmount() {
-        return amount;
+    public final int getAmountIntegerPart() {
+        return amountIntegerPart;
     }
 
-    public final void increaseAmount(final float amount) {
-        this.amount += amount;
+    public final int getAmountDecimalPart() {
+        return this.amountDecimalPart;
     }
 
-    public final void decreaseAmount(final float amount) {
-        this.amount -= amount;
+    public final void increaseAmountIntegerPart(final float amount) {
+        this.amountIntegerPart += amount;
     }
 
-    public long getCreditorId() {
+    public final void decreaseAmountIntegerPart(final float amount) {
+        this.amountIntegerPart -= amount;
+    }
+
+    public final long getCreditorId() {
         return creditorId;
     }
 
-    public long getDebtorId() {
+    public final long getDebtorId() {
         return debtorId;
     }
 }

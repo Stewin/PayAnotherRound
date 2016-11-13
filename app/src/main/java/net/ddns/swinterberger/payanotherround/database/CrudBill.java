@@ -20,7 +20,7 @@ public final class CrudBill {
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_DESCRIPTION = "description";
     private static final String ATTRIBUTE_AMOUNT = "amount";
-    private static final String ATTRIBUTE_CURRENCY = "currency";
+    private static final String ATTRIBUTE_CURRENCY = "net/ddns/swinterberger/payanotherround/currency";
     private static final String ATTRIBUTE_FK_TRIP = "fk_trip";
     private static final String ATTRIBUTE_FK_PAYERID = "fk_payer";
     private static final String TABLE_BILL = "bill";

@@ -12,7 +12,8 @@ public final class Bill {
 
     private long id;
     private String description;
-    private int amount;
+    private int amountInteger;
+    private int amountDecimal;
     private String currency; //Währung
     private Trip trip;
     private long tripId;
@@ -38,11 +39,19 @@ public final class Bill {
     }
 
     public final int getAmount() {
-        return amount;
+        return amountInteger;
     }
 
     public final void setAmount(final int amount) {
-        this.amount = amount;
+        this.amountInteger = amount;
+    }
+
+    public int getAmountDecimal() {
+        return amountDecimal;
+    }
+
+    public void setAmountDecimal(int amountDecimal) {
+        this.amountDecimal = amountDecimal;
     }
 
     public final String getCurrency() {

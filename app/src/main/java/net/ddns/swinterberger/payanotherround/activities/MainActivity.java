@@ -238,7 +238,7 @@ public final class MainActivity extends AppCompatActivity {
                 for (Long user : bill.getDebtorIds()) {
                     Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
                     if (debt != null) {
-                        debt.decreaseAmount(bill.getAmount() / bill.getDebtorIds().size());
+                        debt.decreaseAmountIntegerPart(bill.getAmount() / bill.getDebtorIds().size());
                         dbAdapter.getCrudDebt().updateDebt(debt);
                     }
                 }

@@ -1,5 +1,6 @@
 package net.ddns.swinterberger.payanotherround.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -86,7 +87,6 @@ public final class CreateTrip extends AppCompatActivity {
                 //TODO: Add decimal Values to the amount. But as int not as float.
                 //TODO: BUGFIX focus Loss problem by enter the name
 
-                //TODO: Auto Select a new created Trip
                 //TODO: Add Different Currencies + Options for Currencie calculation
                 //TODO: Fotos and Colors for user
                 //TODO: Reopen and edit bills
@@ -125,7 +125,9 @@ public final class CreateTrip extends AppCompatActivity {
                     }
 
                 }
-
+                Intent intent = new Intent();
+                intent.putExtra("tripId", tripId);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -196,8 +198,8 @@ public final class CreateTrip extends AppCompatActivity {
 
     @Override
     public final void onBackPressed() {
-        super.onBackPressed();
         setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 
     private class UserOneCheckboxListItemAdapter extends BaseAdapter {

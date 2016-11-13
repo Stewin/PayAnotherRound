@@ -76,15 +76,17 @@ public final class CreateBill extends AppCompatActivity {
     }
 
     private void createDebtEntries(Bill bill) {
-        int debtAmountPerDebtor = bill.getAmount() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorInteger = bill.getAmount() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorDecimal = bill.getAmount() / bill.getDebtorIds().size();
+
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
 
         for (long debtorId : bill.getDebtorIds()) {
             Debt debt = crudDebt.readDebtByPrimaryKey(bill.getPayerId(), debtorId);
             if (debt == null) {
-                crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtor);
+                crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtorInteger, debtAmountPerDebtorDecimal);
             } else {
-                debt.increaseAmount(debtAmountPerDebtor);
+                debt.increaseAmountIntegerPart(debtAmountPerDebtorInteger);
                 crudDebt.updateDebt(debt);
             }
         }

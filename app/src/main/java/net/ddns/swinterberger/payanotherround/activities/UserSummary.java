@@ -63,8 +63,8 @@ public final class UserSummary extends AppCompatActivity {
 
             Debt debt1 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId);
             if (debt1 != null) {
-                int debtAmount = debt1.getAmount();
-                debt.decreaseAmount(debtAmount);
+                int debtAmount = debt1.getAmountIntegerPart();
+                debt.decreaseAmountIntegerPart(debtAmount);
             }
         }
 
@@ -78,7 +78,7 @@ public final class UserSummary extends AppCompatActivity {
 
             if (!debtors.contains(creditorOfDebt)) {
                 debtors.add(creditorOfDebt);
-                debts.add(new Debt(userId, creditorOfDebt.getId(), -debt.getAmount()));
+                debts.add(new Debt(userId, creditorOfDebt.getId(), -debt.getAmountIntegerPart(), debt.getAmountDecimalPart()));
             }
         }
     }
@@ -119,7 +119,7 @@ public final class UserSummary extends AppCompatActivity {
                 tvName.setText(debtors.get(position).getName());
 
                 TextView tvAmmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmmount);
-                tvAmmount.setText(String.valueOf(debts.get(position).getAmount()));
+                tvAmmount.setText(String.valueOf(debts.get(position).getAmountIntegerPart()));
 
             }
             return returnView;

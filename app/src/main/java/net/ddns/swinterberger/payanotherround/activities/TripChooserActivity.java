@@ -30,6 +30,8 @@ import java.util.List;
  */
 public final class TripChooserActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE_TRIPCREATED = 1338;
+
     private List<Trip> trips;
     private ListView tripList;
 
@@ -48,12 +50,26 @@ public final class TripChooserActivity extends AppCompatActivity {
         buttonNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TripChooserActivity.this, CreateTrip.class));
+                Intent intent = new Intent(TripChooserActivity.this, CreateTrip.class);
+                startActivityForResult(intent, REQUEST_CODE_TRIPCREATED);
             }
         });
 
         tripList = (ListView) findViewById(R.id.lv_TripList);
         registerForContextMenu(tripList);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_TRIPCREATED && resultCode == RESULT_OK) {
+            //Return to Main With new Created Trip
+            long createdTrip = data.getLongExtra("tripId", -1);
+            if (createdTrip != -1) {
+                returnToMainActivityWithResult(createdTrip);
+            }
+        }
     }
 
     private void refreshList() {
@@ -128,6 +144,13 @@ public final class TripChooserActivity extends AppCompatActivity {
         return true;
     }
 
+    private void returnToMainActivityWithResult(final long chosenPosition) {
+        Intent intent = new Intent();
+        intent.putExtra("tripId", chosenPosition);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     private class SimpleTripListItemAdapter extends BaseAdapter {
 
         @Override
@@ -158,10 +181,7 @@ public final class TripChooserActivity extends AppCompatActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.putExtra("tripId", trips.get(position).getId());
-                        setResult(RESULT_OK, intent);
-                        finish();
+                        returnToMainActivityWithResult(position);
                     }
                 });
             }

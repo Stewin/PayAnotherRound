@@ -21,7 +21,8 @@ public final class CrudDebt {
 
     private static final String ATTRIBUTE_CREDITOR = "fk_creditor";
     private static final String ATTRIBUTE_DEBTOR = "fk_debtor";
-    private static final String ATTRIBUTE_AMOUNT = "amount";
+    private static final String AMOUNT_INTEGER_PART = "amountIntegerPart";
+    private static final String AMOUNT_DECIMAL_PART = "amountDecimalPart";
 
 
     private final SQLiteDatabase database;
@@ -30,11 +31,12 @@ public final class CrudDebt {
         this.database = database;
     }
 
-    public final long createDebt(final long creditorId, final long debtorId, final float amount) {
+    public final long createDebt(final long creditorId, final long debtorId, final int amountIntegerPart, final int amountDecimalPart) {
         ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_CREDITOR, creditorId);
         values.put(ATTRIBUTE_DEBTOR, debtorId);
-        values.put(ATTRIBUTE_AMOUNT, amount);
+        values.put(AMOUNT_INTEGER_PART, amountIntegerPart);
+        values.put(AMOUNT_DECIMAL_PART, amountDecimalPart);
 
         return database.insert(TABLE_DEBT, null, values);
     }
@@ -43,7 +45,7 @@ public final class CrudDebt {
 
         Debt debt = null;
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
                 ATTRIBUTE_CREDITOR + "=" + creditorId + " AND "
                         + ATTRIBUTE_DEBTOR + " = " + debtorId, null, null, null, null);
 
@@ -58,15 +60,17 @@ public final class CrudDebt {
 
         int creditorId = cursor.getInt(0);
         int debtorId = cursor.getInt(1);
-        int amount = cursor.getInt(2);
+        int amountIntegerPart = cursor.getInt(2);
+        int amountDecimalPart = cursor.getInt(3);
         cursor.moveToNext();
 
-        return new Debt(creditorId, debtorId, amount);
+        return new Debt(creditorId, debtorId, amountIntegerPart, amountDecimalPart);
     }
 
     public final boolean updateDebt(final Debt debt) {
         final ContentValues values = new ContentValues();
-        values.put(ATTRIBUTE_AMOUNT, debt.getAmount());
+        values.put(AMOUNT_INTEGER_PART, debt.getAmountIntegerPart());
+        values.put(AMOUNT_DECIMAL_PART, debt.getAmountDecimalPart());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
                 + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
     }
@@ -76,26 +80,8 @@ public final class CrudDebt {
         List<Debt> debts = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
                 ATTRIBUTE_CREDITOR + "=" + userId,
-                null, null, null, null);
-        final boolean found = result.moveToFirst();
-        while (found && !result.isAfterLast()) {
-            debt = getNextDebt(result);
-            debts.add(debt);
-        }
-        result.close();
-
-        return debts;
-    }
-
-    public final List<Debt> readDebtsContainsUser(final long userId) {
-        Debt debt;
-        List<Debt> debts = new ArrayList<>();
-
-        final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
-                ATTRIBUTE_CREDITOR + "=" + userId + "OR" + ATTRIBUTE_DEBTOR + "=" + userId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
@@ -112,7 +98,7 @@ public final class CrudDebt {
         List<Debt> debts = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_AMOUNT},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
                 ATTRIBUTE_DEBTOR + "=" + userId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
