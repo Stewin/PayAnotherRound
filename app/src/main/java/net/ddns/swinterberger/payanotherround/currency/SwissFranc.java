@@ -9,7 +9,7 @@ package net.ddns.swinterberger.payanotherround.currency;
 public final class SwissFranc extends Currency {
 
     public SwissFranc() {
-        this.currencyAbreviation = "CHF";
+        this.currencyAbbreviation = "CHF";
         this.exchangeRatio = 1;
     }
 }

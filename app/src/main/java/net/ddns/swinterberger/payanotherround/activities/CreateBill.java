@@ -1,5 +1,6 @@
 package net.ddns.swinterberger.payanotherround.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +42,7 @@ public final class CreateBill extends AppCompatActivity {
     private DbAdapter dbAdapter = new DbAdapter(this);
     private String[] currencyList;
     private Spinner spinnerCurrency;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,6 +57,14 @@ public final class CreateBill extends AppCompatActivity {
         currencyList = new String[]{"CHF", "EUR", "USD"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
+        preferences = getPreferences(MODE_PRIVATE);
+        String lastUsedCurrency = preferences.getString(getResources().getString(R.string.preference_currency_lastused), "CHF");
+
+        for (int i = 0; i < currencyList.length; i++) {
+            if (currencyList[i].toString().equals(lastUsedCurrency)) {
+                spinnerCurrency.setSelection(i);
+            }
+        }
 
         tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
 
@@ -79,11 +89,12 @@ public final class CreateBill extends AppCompatActivity {
     }
 
     private void createDebtEntries(Bill bill) {
-        //TODO: Evtl. Kosten prozentual aufteilen
+        //TODO: ERWEITERUNG Evtl. Kosten prozentual aufteilen
+        //TODO: Extract Currency in DB and make exchange ratio changeable.
 
         Currency amount = bill.getAmount();
+        amount.exchangeAmount();
         int numberOfDebtors = bill.getDebtorIds().size();
-
         amount.divideByUsers(numberOfDebtors);
 
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
@@ -102,14 +113,19 @@ public final class CreateBill extends AppCompatActivity {
     private Bill createBillFromActivity() {
         Bill newBill = new Bill();
 
-        //TODO: Add Date on Bills
+        //TODO: ERWEITERUNG Add Date on Bills
+        //TODO: If Payer Selected, selct other Users as Debtors
 
         //Description
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
         newBill.setDescription(description);
 
         String currencyAbreviation = currencyList[spinnerCurrency.getSelectedItemPosition()];
-        Currency amount = CurrencyFactory.getCurrencyOfType("CHF");
+        preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(getResources().getString(R.string.preference_currency_lastused), currencyAbreviation);
+        editor.apply();
+        Currency amount = CurrencyFactory.getCurrencyOfType(currencyAbreviation);
 
         //AmountInteger
         EditText amountFieldInteger = (EditText) findViewById(R.id.et_BillAmountInteger);

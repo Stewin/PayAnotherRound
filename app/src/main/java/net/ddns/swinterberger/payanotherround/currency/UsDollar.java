@@ -9,7 +9,7 @@ package net.ddns.swinterberger.payanotherround.currency;
 public final class UsDollar extends Currency {
 
     public UsDollar() {
-        this.currencyAbreviation = "USD";
-        this.exchangeRatio = 1.8f;
+        this.currencyAbbreviation = "USD";
+        this.exchangeRatio = 1.01f;
     }
 }

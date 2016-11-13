@@ -40,4 +40,5 @@
     <string name="currencyValue_swissfranc">CHF</string>
     <string name="currencyValue_euro">EUR</string>
     <string name="currencyValue_usdollar">USD</string>
+    <string name="preference_currency_lastused">preference_currency_lastused</string>
 </resources>

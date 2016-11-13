@@ -84,10 +84,9 @@ public final class CreateTrip extends AppCompatActivity {
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
 
-                //TODO: Add Different Currencies + Options for Currencie calculation
                 //TODO: BUGFIX focus Loss problem by enter the name
-                //TODO: Fotos and Colors for user
-                //TODO: Reopen and edit bills
+                //TODO: ERWEITERUNG Fotos and Colors for user
+                //TODO: ERWEITERUNG Reopen and edit bills
                 //TODO: Testen stabilisieren (Fehleingaben etc.)
             }
         });

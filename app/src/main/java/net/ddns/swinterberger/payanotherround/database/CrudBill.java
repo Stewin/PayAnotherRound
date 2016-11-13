@@ -117,7 +117,6 @@ public final class CrudBill {
     }
 
     public boolean deleteBillByTripId(final long tripId) {
-        //TODO: BugFix delting Table (Constraints)
         return database.delete(TABLE_BILL, ATTRIBUTE_FK_TRIP + "=" + tripId, null) > 0;
     }
 }

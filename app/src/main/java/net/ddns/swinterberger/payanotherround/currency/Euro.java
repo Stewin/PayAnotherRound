@@ -10,7 +10,7 @@ public class Euro extends Currency {
 
 
     public Euro() {
-        this.currencyAbreviation = "EUR";
+        this.currencyAbbreviation = "EUR";
         this.exchangeRatio = 1.2f;
     }
 }

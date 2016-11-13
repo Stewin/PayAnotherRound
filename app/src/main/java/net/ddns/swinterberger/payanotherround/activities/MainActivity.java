@@ -231,13 +231,12 @@ public final class MainActivity extends AppCompatActivity {
                 int position = ((AdapterView.AdapterContextMenuInfo) info).position;
                 long billId = bills.get(position).getId();
 
-                //Update Debt Table. Decrease the Bill Amount.
+                //TODO: BugFix Logic (Extract together with the same ine in the MainActivity).
                 Bill bill = dbAdapter.getCrudBill().readBillById(billId);
                 List<Long> debtors = dbAdapter.getCrudBillDebtor().readDebtorsByBillId(billId);
                 bill.setDebtorIds(debtors);
                 for (Long user : bill.getDebtorIds()) {
                     Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
-                    //TODO: BugFix Logic.
                     if (debt != null) {
                         debt.decreaseAmountInCent(bill.getAmount().getAmountInCent() / bill.getDebtorIds().size());
                         dbAdapter.getCrudDebt().updateDebt(debt);

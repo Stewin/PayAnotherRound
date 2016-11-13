@@ -8,9 +8,6 @@ import net.ddns.swinterberger.payanotherround.currency.Currency;
 import net.ddns.swinterberger.payanotherround.currency.SwissFranc;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Database Queries for the Relation Table between User and User with a debt amount.
  *
@@ -73,41 +70,5 @@ public final class CrudDebt {
         values.put(AMOUNT_INTEGER_PART, debt.getAmount().getAmountInCent());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
                 + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
-    }
-
-    public final List<Debt> readDebtByCreditorId(final long userId) {
-        Debt debt;
-        List<Debt> debts = new ArrayList<>();
-
-        final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
-                ATTRIBUTE_CREDITOR + "=" + userId,
-                null, null, null, null);
-        final boolean found = result.moveToFirst();
-        while (found && !result.isAfterLast()) {
-            debt = getNextDebt(result);
-            debts.add(debt);
-        }
-        result.close();
-
-        return debts;
-    }
-
-    public List<Debt> readDebtByDebtorId(final long userId) {
-        Debt debt;
-        List<Debt> debts = new ArrayList<>();
-
-        final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
-                ATTRIBUTE_DEBTOR + "=" + userId,
-                null, null, null, null);
-        final boolean found = result.moveToFirst();
-        while (found && !result.isAfterLast()) {
-            debt = getNextDebt(result);
-            debts.add(debt);
-        }
-        result.close();
-
-        return debts;
     }
 }

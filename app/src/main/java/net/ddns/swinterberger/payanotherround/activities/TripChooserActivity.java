@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.entities.Bill;
+import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
 import java.util.ArrayList;
@@ -132,6 +134,25 @@ public final class TripChooserActivity extends AppCompatActivity {
                         break;
                     }
                 }
+
+                //TODO: BugFix Logic (Extract together with the same ine in the MainActivity).
+                List<Bill> bills = dbAdapter.getCrudBill().readBillsByTripId(id);
+                for (Bill b : bills) {
+                    //Update Debt Table. Decrease the Bill Amount.
+                    Bill bill = dbAdapter.getCrudBill().readBillById(b.getId());
+                    List<Long> debtors = dbAdapter.getCrudBillDebtor().readDebtorsByBillId(b.getId());
+                    bill.setDebtorIds(debtors);
+                    for (Long user : bill.getDebtorIds()) {
+                        Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
+                        if (debt != null) {
+                            debt.decreaseAmountInCent(bill.getAmount().getAmountInCent() / bill.getDebtorIds().size());
+                            dbAdapter.getCrudDebt().updateDebt(debt);
+                        }
+                    }
+                    //Delete bill_debtor Entries
+                    dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(b.getId());
+                }
+
                 dbAdapter.getCrudBill().deleteBillByTripId(id);
                 dbAdapter.getCrudAttend().deleteAttendByTripId(id);
                 dbAdapter.getCrudTrip().deleteTripById(id);
@@ -188,6 +209,4 @@ public final class TripChooserActivity extends AppCompatActivity {
             return convertView;
         }
     }
-
-
 }
