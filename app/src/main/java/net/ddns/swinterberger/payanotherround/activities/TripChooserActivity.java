@@ -202,7 +202,7 @@ public final class TripChooserActivity extends AppCompatActivity {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        returnToMainActivityWithResult(position);
+                        returnToMainActivityWithResult(trips.get(position).getId());
                     }
                 });
             }
