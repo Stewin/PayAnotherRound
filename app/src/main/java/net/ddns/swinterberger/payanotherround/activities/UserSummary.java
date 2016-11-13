@@ -29,8 +29,10 @@ import java.util.List;
 public final class UserSummary extends AppCompatActivity {
 
     private ListView userListView;
-    private List<Debt> debts;
+    private List<Debt> debts = new ArrayList<>();
     private List<User> debtors = new ArrayList<>();
+
+    private long tripId;
 
 
     private DbAdapter dbAdapter = new DbAdapter(this);
@@ -46,6 +48,7 @@ public final class UserSummary extends AppCompatActivity {
         long userId = getIntent().getLongExtra(getResources().getString(R.string.extra_userId), -1L);
         User user = dbAdapter.getCrudUser().readUserById(userId);
 
+        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
 
         TextView tvUserName = (TextView) findViewById(R.id.tv_UserName);
         tvUserName.setText(user.getName());
@@ -56,38 +59,39 @@ public final class UserSummary extends AppCompatActivity {
 
     private void collectUserDebtsFor(final long userId) {
 
-        //TODO: Anderen Ansatz wählen. Für jeden Benutzer der dem Trip zugeordnet ist... (Attend Tabelle)
+        //Get the Currency to Display.
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
 
 
-        debts = dbAdapter.getCrudDebt().readDebtByCreditorId(userId);
-
-        for (Debt debt : debts) {
-            User debtor = dbAdapter.getCrudUser().readUserById(debt.getDebtorId());
-            debtors.add(debtor);
-
-            Debt debt1 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId);
-            if (debt1 != null) {
-                int debtAmount = debt1.getAmount().getIntPart();
-                debt.decreaseAmountIntegerPart(debtAmount);
+        //Collect User attending Trip.
+        List<Long> userIds = dbAdapter.getCrudAttend().readUsersByTripId(tripId);
+        for (long userId1 : userIds) {
+            if (userId1 != userId) {
+                User debtor = dbAdapter.getCrudUser().readUserById(userId1);
+                debtors.add(debtor);
             }
         }
 
+        for (User user : debtors) {
 
-        //Add Entries where the current User is Debtor and have no Credits.
-        List<Debt> debts2 = dbAdapter.getCrudDebt().readDebtByDebtorId(userId);
+            Currency totalAmount = CurrencyFactory.getCurrencyOfType(currentCurrency);
 
-        for (Debt debt : debts2) {
-
-            User creditorOfDebt = dbAdapter.getCrudUser().readUserById(debt.getCreditorId());
-
-            if (!debtors.contains(creditorOfDebt)) {
-                debtors.add(creditorOfDebt);
-                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-                String currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
-                Currency amount = CurrencyFactory.getCurrencyOfType(currentCurrency);
-                amount.setAmount(-debt.getAmount().getIntPart(), debt.getAmount().getDecimalPart());
-                debts.add(new Debt(userId, creditorOfDebt.getId(), amount));
+            //Get Debts for User
+            Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(userId, user.getId());
+            if (debt != null) {
+                totalAmount = debt.getAmount();
+            } else {
+                totalAmount.setAmount(0);
             }
+
+            //And subtract Credits for user.
+            Debt debt2 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(user.getId(), userId);
+            if (debt2 != null) {
+                Currency amount = debt2.getAmount();
+                totalAmount.subtractAmount(amount.getAmountInCent());
+            }
+            debts.add(new Debt(userId, userId, totalAmount));
         }
     }
 

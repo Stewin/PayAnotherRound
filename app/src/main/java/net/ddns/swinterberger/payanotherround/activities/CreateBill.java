@@ -79,18 +79,21 @@ public final class CreateBill extends AppCompatActivity {
     }
 
     private void createDebtEntries(Bill bill) {
-        int debtAmountPerDebtorInteger = bill.getAmount().getIntPart() / bill.getDebtorIds().size();
-        int debtAmountPerDebtorDecimal = bill.getAmount().getDecimalPart() / bill.getDebtorIds().size();
+        //TODO: Evtl. Kosten prozentual aufteilen
+
+        Currency amount = bill.getAmount();
+        int numberOfDebtors = bill.getDebtorIds().size();
+
+        amount.divideByUsers(numberOfDebtors);
 
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
 
         for (long debtorId : bill.getDebtorIds()) {
             Debt debt = crudDebt.readDebtByPrimaryKey(bill.getPayerId(), debtorId);
             if (debt == null) {
-                crudDebt.createDebt(bill.getPayerId(), debtorId, debtAmountPerDebtorInteger, debtAmountPerDebtorDecimal);
+                crudDebt.createDebt(bill.getPayerId(), debtorId, amount.getAmountInCent());
             } else {
-                debt.increaseAmountIntegerPart(debtAmountPerDebtorInteger);
-                debt.increaseAmountDecimalPart(debtAmountPerDebtorDecimal);
+                debt.increaseAmountInCent(amount.getAmountInCent());
                 crudDebt.updateDebt(debt);
             }
         }
@@ -98,6 +101,8 @@ public final class CreateBill extends AppCompatActivity {
 
     private Bill createBillFromActivity() {
         Bill newBill = new Bill();
+
+        //TODO: Add Date on Bills
 
         //Description
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
@@ -108,9 +113,9 @@ public final class CreateBill extends AppCompatActivity {
 
         //AmountInteger
         EditText amountFieldInteger = (EditText) findViewById(R.id.et_BillAmountInteger);
-        int amountInteger = 0;
+        int amountInCent = 0;
         try {
-            amountInteger = Integer.parseInt(amountFieldInteger.getText().toString());
+            amountInCent = Integer.parseInt(amountFieldInteger.getText().toString());
         } catch (NumberFormatException nfe) {
             Log.e("NumberFormatException", nfe.toString());
         }
@@ -124,7 +129,7 @@ public final class CreateBill extends AppCompatActivity {
             Log.e("NumberFormatException", nfe.toString());
         }
 
-        amount.setAmount(amountInteger, amountDecimal);
+        amount.setAmount(amountInCent * 100 + amountDecimal);
         newBill.setAmount(amount);
 
         //Trip

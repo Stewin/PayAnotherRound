@@ -1,7 +1,11 @@
 package net.ddns.swinterberger.payanotherround.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Database Queries for the Relation Table between Users and Trips. (n:m-Relationship)
@@ -30,6 +34,21 @@ public final class CrudAttend {
         values.put(ATTRIBUTE_TRIP_ID, tripId);
 
         return database.insert(TABLE_ATTEND, null, values);
+    }
+
+    public List<Long> readUsersByTripId(final long tripId) {
+        List<Long> userIds = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_ATTEND, new String[]{ATTRIBUTE_USER_ID}, ATTRIBUTE_TRIP_ID + "=" + tripId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+
+        while (found && !result.isAfterLast()) {
+            userIds.add(result.getLong(0));
+            result.moveToNext();
+        }
+        result.close();
+        return userIds;
     }
 
     public final boolean deleteAttend(final long userId, final long tripId) {

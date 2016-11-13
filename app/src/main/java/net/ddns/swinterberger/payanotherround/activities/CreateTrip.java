@@ -88,7 +88,6 @@ public final class CreateTrip extends AppCompatActivity {
                 //TODO: BUGFIX focus Loss problem by enter the name
                 //TODO: Fotos and Colors for user
                 //TODO: Reopen and edit bills
-                //TODO: Evtl. Kosten prozentual aufteilen
                 //TODO: Testen stabilisieren (Fehleingaben etc.)
             }
         });

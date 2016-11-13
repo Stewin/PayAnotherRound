@@ -16,8 +16,6 @@ public class SwissFrancTest {
     @Before
     public void setUp() {
         testee = new SwissFranc();
-        testee.setIntegerPart(10);
-        testee.setDecimalPart(50);
     }
 
     @After
@@ -27,23 +25,35 @@ public class SwissFrancTest {
 
     @Test
     public void setAmount() throws Exception {
-        testee.setAmount(5, 20);
-        assertEquals(20, testee.getDecimalPart());
-        assertEquals(5, testee.getIntPart());
+        testee.setAmount(520);
+        assertEquals(520, testee.getAmountInCent());
     }
 
     @Test
-    public void addAmount() throws Exception {
-        testee.addAmount(5, 20);
-        assertEquals(70, testee.getDecimalPart());
-        assertEquals(15, testee.getIntPart());
+    public void addAmountPositive() throws Exception {
+        testee.addAmount(560);
+        assertEquals(560, testee.getAmountInCent());
     }
 
     @Test
-    public void subtractAmount() throws Exception {
-        testee.subtractAmount(4, 80);
-        assertEquals(70, testee.getDecimalPart());
-        assertEquals(5, testee.getIntPart());
+    public void addAmountNegative() throws Exception {
+        testee.setAmount(-550);
+        testee.addAmount(620);
+        assertEquals(70, testee.getAmountInCent());
+    }
+
+    @Test
+    public void subtractAmountPositive() throws Exception {
+        testee.setAmount(550);
+        testee.subtractAmount(480);
+        assertEquals(70, testee.getAmountInCent());
+    }
+
+    @Test
+    public void subtractAmountNegativ() throws Exception {
+        testee.setAmount(-430);
+        testee.subtractAmount(280);
+        assertEquals(-710, testee.getAmountInCent());
     }
 
     @Test
@@ -51,4 +61,17 @@ public class SwissFrancTest {
         assertEquals("CHF", testee.getCurrencyAbbreviation());
     }
 
+    @Test
+    public void testDivideByUsersWith2Users() {
+        testee.setAmount(500);
+        testee.divideByUsers(2);
+        assertEquals(250, testee.getAmountInCent());
+    }
+
+    @Test
+    public void testDivideByUsersWith3Users() {
+        testee.setAmount(1255);
+        testee.divideByUsers(4);
+        assertEquals(313, testee.getAmountInCent());
+    }
 }

@@ -23,8 +23,7 @@ public final class CrudDebt {
 
     private static final String ATTRIBUTE_CREDITOR = "fk_creditor";
     private static final String ATTRIBUTE_DEBTOR = "fk_debtor";
-    private static final String AMOUNT_INTEGER_PART = "amountIntegerPart";
-    private static final String AMOUNT_DECIMAL_PART = "amountDecimalPart";
+    private static final String AMOUNT_INTEGER_PART = "amountInCent";
 
 
     private final SQLiteDatabase database;
@@ -33,12 +32,11 @@ public final class CrudDebt {
         this.database = database;
     }
 
-    public final long createDebt(final long creditorId, final long debtorId, final int amountIntegerPart, final int amountDecimalPart) {
+    public final long createDebt(final long creditorId, final long debtorId, final int amountIntegerPart) {
         ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_CREDITOR, creditorId);
         values.put(ATTRIBUTE_DEBTOR, debtorId);
         values.put(AMOUNT_INTEGER_PART, amountIntegerPart);
-        values.put(AMOUNT_DECIMAL_PART, amountDecimalPart);
 
         return database.insert(TABLE_DEBT, null, values);
     }
@@ -47,7 +45,7 @@ public final class CrudDebt {
 
         Debt debt = null;
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
                 ATTRIBUTE_CREDITOR + "=" + creditorId + " AND "
                         + ATTRIBUTE_DEBTOR + " = " + debtorId, null, null, null, null);
 
@@ -64,7 +62,7 @@ public final class CrudDebt {
         int debtorId = cursor.getInt(1);
 
         Currency amount = new SwissFranc();
-        amount.setAmount(cursor.getInt(2), cursor.getInt(3));
+        amount.setAmount(cursor.getInt(2));
         cursor.moveToNext();
 
         return new Debt(creditorId, debtorId, amount);
@@ -72,8 +70,7 @@ public final class CrudDebt {
 
     public final boolean updateDebt(final Debt debt) {
         final ContentValues values = new ContentValues();
-        values.put(AMOUNT_INTEGER_PART, debt.getAmount().getIntPart());
-        values.put(AMOUNT_DECIMAL_PART, debt.getAmount().getDecimalPart());
+        values.put(AMOUNT_INTEGER_PART, debt.getAmount().getAmountInCent());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
                 + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
     }
@@ -83,7 +80,7 @@ public final class CrudDebt {
         List<Debt> debts = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
                 ATTRIBUTE_CREDITOR + "=" + userId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -101,7 +98,7 @@ public final class CrudDebt {
         List<Debt> debts = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART, AMOUNT_DECIMAL_PART},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
                 ATTRIBUTE_DEBTOR + "=" + userId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();

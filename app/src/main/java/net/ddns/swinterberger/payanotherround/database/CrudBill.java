@@ -21,8 +21,7 @@ public final class CrudBill {
 
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_DESCRIPTION = "description";
-    private static final String ATTRIBUTE_AMOUNT_INTEGER = "amountInteger";
-    private static final String ATTRIBUTE_AMOUNT_DECIMAL = "amountDecimal";
+    private static final String ATTRIBUTE_AMOUNT_INTEGER = "amountInCent";
     private static final String ATTRIBUTE_CURRENCY = "currency";
     private static final String ATTRIBUTE_FK_TRIP = "fk_trip";
     private static final String ATTRIBUTE_FK_PAYERID = "fk_payer";
@@ -37,8 +36,7 @@ public final class CrudBill {
     public long createBill(final Bill bill) {
         final ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_DESCRIPTION, bill.getDescription());
-        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmount().getIntPart());
-        values.put(ATTRIBUTE_AMOUNT_DECIMAL, bill.getAmount().getDecimalPart());
+        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmount().getAmountInCent());
         values.put(ATTRIBUTE_CURRENCY, bill.getAmount().getCurrencyAbbreviation());
         values.put(ATTRIBUTE_FK_TRIP, bill.getTripId());
         values.put(ATTRIBUTE_FK_PAYERID, bill.getPayerId());
@@ -51,7 +49,7 @@ public final class CrudBill {
     public Bill readBillById(final long id) {
         Bill bill = null;
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 ATTRIBUTE_ID + "=" + id,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -67,7 +65,7 @@ public final class CrudBill {
         ArrayList<Bill> bills = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 ATTRIBUTE_FK_TRIP + " = " + tripId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -84,7 +82,7 @@ public final class CrudBill {
         Bill bill;
         ArrayList<Bill> bills = new ArrayList<>();
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 null, null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
@@ -99,11 +97,11 @@ public final class CrudBill {
         final Bill bill = new Bill();
         bill.setId(cursor.getLong(0));
         bill.setDescription(cursor.getString(1));
-        Currency amount = CurrencyFactory.getCurrencyOfType(cursor.getString(4));
-        amount.setAmount(cursor.getInt(2), cursor.getInt(3));
+        Currency amount = CurrencyFactory.getCurrencyOfType(cursor.getString(3));
+        amount.setAmount(cursor.getInt(2));
         bill.setAmount(amount);
-        bill.setPayerId(cursor.getInt(5));
-        bill.setTripId(cursor.getInt(6));
+        bill.setPayerId(cursor.getInt(4));
+        bill.setTripId(cursor.getInt(5));
         cursor.moveToNext();
         return bill;
     }
@@ -119,6 +117,7 @@ public final class CrudBill {
     }
 
     public boolean deleteBillByTripId(final long tripId) {
+        //TODO: BugFix delting Table (Constraints)
         return database.delete(TABLE_BILL, ATTRIBUTE_FK_TRIP + "=" + tripId, null) > 0;
     }
 }

@@ -28,6 +28,7 @@ public final class SummaryTripUsers extends AppCompatActivity {
     private DbAdapter dbAdapter = new DbAdapter(this);
 
     private ListView userListView;
+    private long tripId;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public final class SummaryTripUsers extends AppCompatActivity {
         TextView tvTripTitle = (TextView) findViewById(R.id.tv_TripTitle);
         tvTripTitle.setText(getResources().getString(R.string.lable_summary));
 
-        long tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1L);
+        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1L);
         allUsers = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
         refreshList();
@@ -85,6 +86,7 @@ public final class SummaryTripUsers extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(SummaryTripUsers.this, UserSummary.class);
                         intent.putExtra(getResources().getString(R.string.extra_userId), allUsers.get(position).getId());
+                        intent.putExtra(getResources().getString(R.string.extra_tripid), tripId);
                         startActivity(intent);
                     }
                 });

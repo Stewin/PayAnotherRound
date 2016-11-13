@@ -29,12 +29,12 @@ public final class Debt {
         this.amount = amount;
     }
 
-    public final void increaseAmountIntegerPart(final int amount) {
-        this.amount.addAmount(amount, 0);
+    public final void increaseAmountInCent(final int amount) {
+        this.amount.addAmount(amount);
     }
 
-    public final void decreaseAmountIntegerPart(final int amount) {
-        this.amount.subtractAmount(amount, 0);
+    public final void decreaseAmountInCent(final int amount) {
+        this.amount.subtractAmount(amount);
     }
 
     public final long getCreditorId() {
@@ -43,9 +43,5 @@ public final class Debt {
 
     public final long getDebtorId() {
         return debtorId;
-    }
-
-    public void increaseAmountDecimalPart(final int debtAmountPerDebtorDecimal) {
-        amount.addAmount(0, debtAmountPerDebtorDecimal);
     }
 }
