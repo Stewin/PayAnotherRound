@@ -6,38 +6,35 @@ import net.ddns.swinterberger.payanotherround.currency.Currency;
  * Represents a Debt from a User to Another (Relationship Table).
  *
  * @author Stefan Winterberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class Debt {
 
     private long creditorId;
     private long debtorId;
     private Currency amount;
-    private int amountIntegerPart;
-    private int amountDecimalPart;
 
     public Debt(final long creditorId, final long debtorId,
-                final int amountIntegerPart, final int amountDecimalPart) {
+                final Currency amount) {
         this.creditorId = creditorId;
         this.debtorId = debtorId;
-        this.amountIntegerPart = amountIntegerPart;
-        this.amountDecimalPart = amountDecimalPart;
+        this.amount = amount;
     }
 
-    public final int getAmountIntegerPart() {
-        return amountIntegerPart;
+    public Currency getAmount() {
+        return amount;
     }
 
-    public final int getAmountDecimalPart() {
-        return this.amountDecimalPart;
+    public void setAmount(Currency amount) {
+        this.amount = amount;
     }
 
-    public final void increaseAmountIntegerPart(final float amount) {
-        this.amountIntegerPart += amount;
+    public final void increaseAmountIntegerPart(final int amount) {
+        this.amount.addAmount(amount, 0);
     }
 
-    public final void decreaseAmountIntegerPart(final float amount) {
-        this.amountIntegerPart -= amount;
+    public final void decreaseAmountIntegerPart(final int amount) {
+        this.amount.subtractAmount(amount, 0);
     }
 
     public final long getCreditorId() {
@@ -49,6 +46,6 @@ public final class Debt {
     }
 
     public void increaseAmountDecimalPart(final int debtAmountPerDebtorDecimal) {
-        amountDecimalPart += debtAmountPerDebtorDecimal;
+        amount.addAmount(0, debtAmountPerDebtorDecimal);
     }
 }

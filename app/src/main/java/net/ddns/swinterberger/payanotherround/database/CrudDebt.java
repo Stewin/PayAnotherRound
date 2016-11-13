@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.ddns.swinterberger.payanotherround.currency.Currency;
+import net.ddns.swinterberger.payanotherround.currency.SwissFranc;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
  * Database Queries for the Relation Table between User and User with a debt amount.
  *
  * @author Stefan Winterberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class CrudDebt {
 
@@ -60,17 +62,18 @@ public final class CrudDebt {
 
         int creditorId = cursor.getInt(0);
         int debtorId = cursor.getInt(1);
-        int amountIntegerPart = cursor.getInt(2);
-        int amountDecimalPart = cursor.getInt(3);
+
+        Currency amount = new SwissFranc();
+        amount.setAmount(cursor.getInt(2), cursor.getInt(3));
         cursor.moveToNext();
 
-        return new Debt(creditorId, debtorId, amountIntegerPart, amountDecimalPart);
+        return new Debt(creditorId, debtorId, amount);
     }
 
     public final boolean updateDebt(final Debt debt) {
         final ContentValues values = new ContentValues();
-        values.put(AMOUNT_INTEGER_PART, debt.getAmountIntegerPart());
-        values.put(AMOUNT_DECIMAL_PART, debt.getAmountDecimalPart());
+        values.put(AMOUNT_INTEGER_PART, debt.getAmount().getIntPart());
+        values.put(AMOUNT_DECIMAL_PART, debt.getAmount().getDecimalPart());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
                 + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
     }

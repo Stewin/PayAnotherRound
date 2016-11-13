@@ -174,7 +174,7 @@ public final class CreateTrip extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.delete:
-                int position = ((AdapterView.AdapterContextMenuInfo) info).position;
+                int position = info.position;
                 long id = allUsers.get(position).getId();
 
                 //TODO: BUGFIX deleting User.

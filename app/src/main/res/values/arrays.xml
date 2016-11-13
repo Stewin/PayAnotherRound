@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="currencyKey">
+        <item>@string/preference_currency_swissfranc</item>
+        <item>@string/preference_currency_euro</item>
+        <item>@string/preference_currency_usdollar</item>
+    </string-array>
+
+    <string-array name="currencyValue">
+        <item>@string/currencyValue_swissfranc</item>
+        <item>@string/currencyValue_euro</item>
+        <item>@string/currencyValue_usdollar</item>
+    </string-array>
+
+</resources>

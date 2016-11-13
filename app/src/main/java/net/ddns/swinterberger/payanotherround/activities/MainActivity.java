@@ -38,7 +38,7 @@ import java.util.List;
  * MainActivity, is used to see an Overview over the Bills for the selected Trip.
  *
  * @author Stefan Winteberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class MainActivity extends AppCompatActivity {
 
@@ -237,8 +237,9 @@ public final class MainActivity extends AppCompatActivity {
                 bill.setDebtorIds(debtors);
                 for (Long user : bill.getDebtorIds()) {
                     Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
+                    //TODO: BugFix Logic.
                     if (debt != null) {
-                        debt.decreaseAmountIntegerPart(bill.getAmountInteger() / bill.getDebtorIds().size());
+                        debt.decreaseAmountIntegerPart(bill.getAmount().getIntPart() / bill.getDebtorIds().size());
                         dbAdapter.getCrudDebt().updateDebt(debt);
                     }
                 }
@@ -276,7 +277,6 @@ public final class MainActivity extends AppCompatActivity {
         builder.setNegativeButton(getResources().getString(R.string.lable_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
             }
         });
         builder.create().show();

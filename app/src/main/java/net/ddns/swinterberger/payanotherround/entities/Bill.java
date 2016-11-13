@@ -8,16 +8,13 @@ import java.util.List;
  * Represents a Bill.
  *
  * @author Stefan Winterberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class Bill {
 
     private long id;
     private String description;
     private Currency amount;
-    private int amountInteger;
-    private int amountDecimal;
-    private String currency; //Währung
     private Trip trip;
     private long tripId;
     private User payer;
@@ -41,28 +38,12 @@ public final class Bill {
         this.description = description;
     }
 
-    public final int getAmountInteger() {
-        return amountInteger;
+    public final Currency getAmount() {
+        return amount;
     }
 
-    public final void setAmountInteger(final int amount) {
-        this.amountInteger = amount;
-    }
-
-    public int getAmountDecimal() {
-        return amountDecimal;
-    }
-
-    public void setAmountDecimal(int amountDecimal) {
-        this.amountDecimal = amountDecimal;
-    }
-
-    public final String getCurrency() {
-        return currency;
-    }
-
-    public final void setCurrency(final String currency) {
-        this.currency = currency;
+    public final void setAmount(final Currency amount) {
+        this.amount = amount;
     }
 
     public final Trip getTrip() {

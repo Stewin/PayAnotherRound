@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
+import net.ddns.swinterberger.payanotherround.currency.Currency;
+import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
 import net.ddns.swinterberger.payanotherround.database.CrudBillDebtors;
 import net.ddns.swinterberger.payanotherround.database.CrudDebt;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
@@ -29,7 +31,7 @@ import java.util.List;
  * Activity to creating a new Bill.
  *
  * @author Stefan Winteberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class CreateBill extends AppCompatActivity {
 
@@ -37,6 +39,8 @@ public final class CreateBill extends AppCompatActivity {
     private long tripId;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
+    private String[] currencyList;
+    private Spinner spinnerCurrency;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -47,8 +51,8 @@ public final class CreateBill extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        Spinner spinnerCurrency = (Spinner) findViewById(R.id.sp_Currency);
-        String[] currencyList = {"CHF", "EUR", "USD"};
+        spinnerCurrency = (Spinner) findViewById(R.id.sp_Currency);
+        currencyList = new String[]{"CHF", "EUR", "USD"};
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
 
@@ -75,8 +79,8 @@ public final class CreateBill extends AppCompatActivity {
     }
 
     private void createDebtEntries(Bill bill) {
-        int debtAmountPerDebtorInteger = bill.getAmountInteger() / bill.getDebtorIds().size();
-        int debtAmountPerDebtorDecimal = bill.getAmountDecimal() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorInteger = bill.getAmount().getIntPart() / bill.getDebtorIds().size();
+        int debtAmountPerDebtorDecimal = bill.getAmount().getDecimalPart() / bill.getDebtorIds().size();
 
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
 
@@ -99,6 +103,9 @@ public final class CreateBill extends AppCompatActivity {
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
         newBill.setDescription(description);
 
+        String currencyAbreviation = currencyList[spinnerCurrency.getSelectedItemPosition()];
+        Currency amount = CurrencyFactory.getCurrencyOfType("CHF");
+
         //AmountInteger
         EditText amountFieldInteger = (EditText) findViewById(R.id.et_BillAmountInteger);
         int amountInteger = 0;
@@ -107,7 +114,6 @@ public final class CreateBill extends AppCompatActivity {
         } catch (NumberFormatException nfe) {
             Log.e("NumberFormatException", nfe.toString());
         }
-        newBill.setAmountInteger(amountInteger);
 
         //AmmountDecimal
         EditText amountFieldDecimal = (EditText) findViewById(R.id.et_BillAmountDecimal);
@@ -117,11 +123,9 @@ public final class CreateBill extends AppCompatActivity {
         } catch (NumberFormatException nfe) {
             Log.e("NumberFormatException", nfe.toString());
         }
-        newBill.setAmountDecimal(amountDecimal);
 
-        //Currency
-        String currency = ((Spinner) findViewById(R.id.sp_Currency)).getSelectedItem().toString();
-        newBill.setCurrency(currency);
+        amount.setAmount(amountInteger, amountDecimal);
+        newBill.setAmount(amount);
 
         //Trip
         newBill.setTripId(this.tripId);

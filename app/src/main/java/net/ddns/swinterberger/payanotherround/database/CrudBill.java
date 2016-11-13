@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.ddns.swinterberger.payanotherround.currency.Currency;
+import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
  * Database Queries for the Bill-Table.
  *
  * @author Stefan Winterberger
- * @version 1.0
+ * @version 1.0.0
  */
 public final class CrudBill {
 
@@ -35,9 +37,9 @@ public final class CrudBill {
     public long createBill(final Bill bill) {
         final ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_DESCRIPTION, bill.getDescription());
-        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmountInteger());
-        values.put(ATTRIBUTE_AMOUNT_DECIMAL, bill.getAmountDecimal());
-        values.put(ATTRIBUTE_CURRENCY, bill.getCurrency());
+        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmount().getIntPart());
+        values.put(ATTRIBUTE_AMOUNT_DECIMAL, bill.getAmount().getDecimalPart());
+        values.put(ATTRIBUTE_CURRENCY, bill.getAmount().getCurrencyAbbreviation());
         values.put(ATTRIBUTE_FK_TRIP, bill.getTripId());
         values.put(ATTRIBUTE_FK_PAYERID, bill.getPayerId());
         final long id = database.insert(TABLE_BILL, null, values);
@@ -48,7 +50,8 @@ public final class CrudBill {
 
     public Bill readBillById(final long id) {
         Bill bill = null;
-        final Cursor result = database.query(TABLE_BILL, new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+        final Cursor result = database.query(TABLE_BILL,
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 ATTRIBUTE_ID + "=" + id,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -64,7 +67,7 @@ public final class CrudBill {
         ArrayList<Bill> bills = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 ATTRIBUTE_FK_TRIP + " = " + tripId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -81,7 +84,7 @@ public final class CrudBill {
         Bill bill;
         ArrayList<Bill> bills = new ArrayList<>();
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_AMOUNT_DECIMAL, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
                 null, null, null, null, null);
         final boolean found = result.moveToFirst();
         while (found && !result.isAfterLast()) {
@@ -96,10 +99,11 @@ public final class CrudBill {
         final Bill bill = new Bill();
         bill.setId(cursor.getLong(0));
         bill.setDescription(cursor.getString(1));
-        bill.setAmountInteger(cursor.getInt(2));
-        bill.setAmountDecimal(cursor.getInt(3));
-        bill.setPayerId(cursor.getInt(4));
-        bill.setTripId(cursor.getInt(5));
+        Currency amount = CurrencyFactory.getCurrencyOfType(cursor.getString(4));
+        amount.setAmount(cursor.getInt(2), cursor.getInt(3));
+        bill.setAmount(amount);
+        bill.setPayerId(cursor.getInt(5));
+        bill.setTripId(cursor.getInt(6));
         cursor.moveToNext();
         return bill;
     }

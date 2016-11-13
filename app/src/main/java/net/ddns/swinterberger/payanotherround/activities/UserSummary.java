@@ -1,5 +1,6 @@
 package net.ddns.swinterberger.payanotherround.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
+import net.ddns.swinterberger.payanotherround.currency.Currency;
+import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.User;
@@ -55,6 +58,7 @@ public final class UserSummary extends AppCompatActivity {
 
         //TODO: Anderen Ansatz wählen. Für jeden Benutzer der dem Trip zugeordnet ist... (Attend Tabelle)
 
+
         debts = dbAdapter.getCrudDebt().readDebtByCreditorId(userId);
 
         for (Debt debt : debts) {
@@ -63,7 +67,7 @@ public final class UserSummary extends AppCompatActivity {
 
             Debt debt1 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(debtor.getId(), userId);
             if (debt1 != null) {
-                int debtAmount = debt1.getAmountIntegerPart();
+                int debtAmount = debt1.getAmount().getIntPart();
                 debt.decreaseAmountIntegerPart(debtAmount);
             }
         }
@@ -78,7 +82,11 @@ public final class UserSummary extends AppCompatActivity {
 
             if (!debtors.contains(creditorOfDebt)) {
                 debtors.add(creditorOfDebt);
-                debts.add(new Debt(userId, creditorOfDebt.getId(), -debt.getAmountIntegerPart(), debt.getAmountDecimalPart()));
+                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                String currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
+                Currency amount = CurrencyFactory.getCurrencyOfType(currentCurrency);
+                amount.setAmount(-debt.getAmount().getIntPart(), debt.getAmount().getDecimalPart());
+                debts.add(new Debt(userId, creditorOfDebt.getId(), amount));
             }
         }
     }
@@ -119,8 +127,7 @@ public final class UserSummary extends AppCompatActivity {
                 tvName.setText(debtors.get(position).getName());
 
                 TextView tvAmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmount);
-                String amountAsString = String.valueOf(debts.get(position).getAmountIntegerPart()) + "." + String.valueOf(debts.get(position).getAmountDecimalPart());
-                tvAmount.setText(amountAsString);
+                tvAmount.setText(debts.get(position).getAmount().toString());
 
             }
             return returnView;
