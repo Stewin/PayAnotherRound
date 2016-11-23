@@ -8,16 +8,20 @@ package net.ddns.swinterberger.payanotherround.currency;
  * @version 1.0.0
  */
 public final class CurrencyFactory {
-    public static Currency getCurrencyOfType(final String currencyAbbreviation) {
+
+
+    public static Currency getCurrencyOfType(final int currencyId) {
         Currency currency = null;
-        switch (currencyAbbreviation) {
-            case "CHF":
+
+
+        switch (currencyId) {
+            case 1:
                 currency = new SwissFranc();
                 break;
-            case "EUR":
+            case 2:
 
                 break;
-            case "USD":
+            case 3:
                 currency = new UsDollar();
                 break;
             default:

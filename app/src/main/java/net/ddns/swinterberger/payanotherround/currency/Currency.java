@@ -8,56 +8,46 @@ package net.ddns.swinterberger.payanotherround.currency;
  */
 public class Currency {
 
+    protected long id;
     protected String currencyAbbreviation;
     protected float exchangeRatio;
-
-    private int amountInCent;
 
     public Currency() {
         this.currencyAbbreviation = "DEF";
         this.exchangeRatio = 1;
     }
 
-    public int getAmountInCent() {
-        return this.amountInCent;
+    public long getId() {
+        return id;
     }
 
-    public final void addAmount(final int amount) {
-        this.amountInCent += amount;
-    }
-
-    public final void subtractAmount(final int amount) {
-        this.amountInCent -= amount;
+    public void setId(final long id) {
+        this.id = id;
     }
 
     public String getCurrencyAbbreviation() {
         return currencyAbbreviation;
     }
 
+    public void setCurrencyAbbreviation(String currencyAbbreviation) {
+        this.currencyAbbreviation = currencyAbbreviation;
+    }
+
     public float getExchangeRatio() {
         return exchangeRatio;
     }
 
-    public final void setAmount(final int amount) {
-        this.amountInCent = amount;
+    public void setExchangeRatio(float exchangeRatio) {
+        this.exchangeRatio = exchangeRatio;
     }
 
-    public void divideByUsers(int numberUsers) {
-        this.amountInCent = Math.round(this.amountInCent / numberUsers);
-    }
-
-    public void exchangeAmount() {
-        this.amountInCent = (int) (this.amountInCent * this.exchangeRatio);
-    }
-
-    @Override
-    public String toString() {
+    public String amountToString(final long amountInCent) {
 
         //Zehner Stelle
-        int seconddigit = Math.abs((this.amountInCent / 10) % 10);
+        long seconddigit = Math.abs((amountInCent / 10) % 10);
 
         //Einer Stelle
-        int firstDigit = Math.abs(this.amountInCent % 10);
+        long firstDigit = Math.abs(amountInCent % 10);
 
         StringBuilder sb = new StringBuilder();
         sb.append(currencyAbbreviation).append(": ");

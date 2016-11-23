@@ -4,9 +4,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.ddns.swinterberger.payanotherround.currency.Currency;
-import net.ddns.swinterberger.payanotherround.currency.SwissFranc;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Database Queries for the Relation Table between User and User with a debt amount.
@@ -20,7 +21,8 @@ public final class CrudDebt {
 
     private static final String ATTRIBUTE_CREDITOR = "fk_creditor";
     private static final String ATTRIBUTE_DEBTOR = "fk_debtor";
-    private static final String AMOUNT_INTEGER_PART = "amountInCent";
+    private static final String ATTRIBUTE_BILL = "fk_bill";
+    private static final String ATTRIBUTE_AMOUNT = "amount_in_cent";
 
 
     private final SQLiteDatabase database;
@@ -29,46 +31,55 @@ public final class CrudDebt {
         this.database = database;
     }
 
-    public final long createDebt(final long creditorId, final long debtorId, final int amountIntegerPart) {
+    public final long createDebt(final long creditorId, final long debtorId, final long billId, final int amountInCent) {
         ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_CREDITOR, creditorId);
         values.put(ATTRIBUTE_DEBTOR, debtorId);
-        values.put(AMOUNT_INTEGER_PART, amountIntegerPart);
+        values.put(ATTRIBUTE_BILL, billId);
+        values.put(ATTRIBUTE_AMOUNT, amountInCent);
 
         return database.insert(TABLE_DEBT, null, values);
     }
 
-    public final Debt readDebtByPrimaryKey(final long creditorId, final long debtorId) {
+    public final List<Debt> readDebtByCreditAndDebtor(final long creditorId, final long debtorId) {
 
+        List<Debt> debts = new ArrayList<>();
         Debt debt = null;
         final Cursor result = database.query(TABLE_DEBT,
-                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, AMOUNT_INTEGER_PART},
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_BILL, ATTRIBUTE_AMOUNT},
                 ATTRIBUTE_CREDITOR + "=" + creditorId + " AND "
                         + ATTRIBUTE_DEBTOR + " = " + debtorId, null, null, null, null);
 
         final boolean found = result.moveToFirst();
-        if (found) {
+        while (found && !result.isAfterLast()) {
             debt = getNextDebt(result);
+            debts.add(debt);
         }
-        return debt;
+        result.close();
+
+        return debts;
     }
 
     private Debt getNextDebt(final Cursor cursor) {
 
         int creditorId = cursor.getInt(0);
         int debtorId = cursor.getInt(1);
+        int billId = cursor.getInt(2);
+        int amountInCent = cursor.getInt(3);
 
-        Currency amount = new SwissFranc();
-        amount.setAmount(cursor.getInt(2));
         cursor.moveToNext();
 
-        return new Debt(creditorId, debtorId, amount);
+        return new Debt(creditorId, debtorId, billId, amountInCent);
     }
 
     public final boolean updateDebt(final Debt debt) {
         final ContentValues values = new ContentValues();
-        values.put(AMOUNT_INTEGER_PART, debt.getAmount().getAmountInCent());
+        values.put(ATTRIBUTE_BILL, debt.getBillId());
         return database.update(TABLE_DEBT, values, ATTRIBUTE_CREDITOR + "=" + debt.getCreditorId() + " AND "
                 + ATTRIBUTE_DEBTOR + " = " + debt.getDebtorId(), null) > 0;
+    }
+
+    public boolean deleteDebtByBillId(final long billId) {
+        return database.delete(TABLE_DEBT, ATTRIBUTE_BILL + "=" + billId, null) > 0;
     }
 }

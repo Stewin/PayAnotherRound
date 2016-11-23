@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.currency.Currency;
-import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.User;
@@ -36,6 +35,8 @@ public final class UserSummary extends AppCompatActivity {
 
 
     private DbAdapter dbAdapter = new DbAdapter(this);
+    private String currentCurrency;
+    private Currency currency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public final class UserSummary extends AppCompatActivity {
 
         //Get the Currency to Display.
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
+        currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
+        currency = dbAdapter.getCrudCurrency().readCurrencyByAbbreviation(currentCurrency);
 
 
         //Collect User attending Trip.
@@ -75,23 +77,20 @@ public final class UserSummary extends AppCompatActivity {
 
         for (User user : debtors) {
 
-            Currency totalAmount = CurrencyFactory.getCurrencyOfType(currentCurrency);
+            int amountInCent = 0;
 
             //Get Debts for User
-            Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(userId, user.getId());
-            if (debt != null) {
-                totalAmount = debt.getAmount();
-            } else {
-                totalAmount.setAmount(0);
+            List<Debt> tempDebts = dbAdapter.getCrudDebt().readDebtByCreditAndDebtor(userId, user.getId());
+            for (Debt debt : tempDebts) {
+                amountInCent += debt.getAmountInCent();
             }
 
             //And subtract Credits for user.
-            Debt debt2 = dbAdapter.getCrudDebt().readDebtByPrimaryKey(user.getId(), userId);
-            if (debt2 != null) {
-                Currency amount = debt2.getAmount();
-                totalAmount.subtractAmount(amount.getAmountInCent());
+            List<Debt> tempDebts2 = dbAdapter.getCrudDebt().readDebtByCreditAndDebtor(user.getId(), userId);
+            for (Debt debt : tempDebts2) {
+                amountInCent -= debt.getAmountInCent();
             }
-            debts.add(new Debt(userId, userId, totalAmount));
+            debts.add(new Debt(userId, userId, 0L, amountInCent));
         }
     }
 
@@ -131,12 +130,10 @@ public final class UserSummary extends AppCompatActivity {
                 tvName.setText(debtors.get(position).getName());
 
                 TextView tvAmount = (TextView) returnView.findViewById(R.id.tv_DebtingAmount);
-                tvAmount.setText(debts.get(position).getAmount().toString());
-
+                String valueAsString = currency.amountToString(debts.get(position).getAmountInCent());
+                tvAmount.setText(valueAsString);
             }
             return returnView;
-
-            //TODO: OnLongClick Delete payed Debts and update DB.
         }
     }
 }

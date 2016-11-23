@@ -18,7 +18,6 @@ import android.widget.TextView;
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
-import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
 import java.util.ArrayList;
@@ -135,25 +134,19 @@ public final class TripChooserActivity extends AppCompatActivity {
                     }
                 }
 
-                //TODO: BugFix Logic (Extract together with the same ine in the MainActivity).
+                //TODO: Delete Bill auslagern (deleteBillRecursive) und in MainActivity wiederverwenden.
                 List<Bill> bills = dbAdapter.getCrudBill().readBillsByTripId(id);
                 for (Bill b : bills) {
-                    //Update Debt Table. Decrease the Bill Amount.
-                    Bill bill = dbAdapter.getCrudBill().readBillById(b.getId());
-                    List<Long> debtors = dbAdapter.getCrudBillDebtor().readDebtorsByBillId(b.getId());
-                    bill.setDebtorIds(debtors);
-                    for (Long user : bill.getDebtorIds()) {
-                        Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
-                        if (debt != null) {
-                            debt.decreaseAmountInCent(bill.getAmount().getAmountInCent() / bill.getDebtorIds().size());
-                            dbAdapter.getCrudDebt().updateDebt(debt);
-                        }
-                    }
-                    //Delete bill_debtor Entries
+                    //1. Delete Debts by Bill Id
+                    dbAdapter.getCrudDebt().deleteDebtByBillId(b.getId());
+
+                    //2. Delete Bill_Debtors by BillId
                     dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(b.getId());
+
+                    //3. Delete Bill
+                    dbAdapter.getCrudBill().deleteBillById(b.getId());
                 }
 
-                dbAdapter.getCrudBill().deleteBillByTripId(id);
                 dbAdapter.getCrudAttend().deleteAttendByTripId(id);
                 dbAdapter.getCrudTrip().deleteTripById(id);
                 refreshList();

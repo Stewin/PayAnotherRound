@@ -17,12 +17,12 @@ import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.currency.Currency;
-import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
+import net.ddns.swinterberger.payanotherround.currency.CurrencyCalculator;
+import net.ddns.swinterberger.payanotherround.currency.CurrencyCalculatorFactory;
 import net.ddns.swinterberger.payanotherround.database.CrudBillDebtors;
 import net.ddns.swinterberger.payanotherround.database.CrudDebt;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
-import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.ArrayList;
@@ -54,7 +54,11 @@ public final class CreateBill extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         spinnerCurrency = (Spinner) findViewById(R.id.sp_Currency);
-        currencyList = new String[]{"CHF", "EUR", "USD"};
+        List<Currency> currencies = dbAdapter.getCrudCurrency().readAllCurrencies();
+        currencyList = new String[currencies.size()];
+        for (int i = 0; i < currencies.size(); i++) {
+            currencyList[i] = currencies.get(i).getCurrencyAbbreviation();
+        }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
         preferences = getPreferences(MODE_PRIVATE);
@@ -90,23 +94,19 @@ public final class CreateBill extends AppCompatActivity {
 
     private void createDebtEntries(Bill bill) {
         //TODO: ERWEITERUNG Evtl. Kosten prozentual aufteilen
-        //TODO: Extract Currency in DB and make exchange ratio changeable.
+        //TODO: Make exchange ratio changeable.
 
-        Currency amount = bill.getAmount();
-        amount.exchangeAmount();
+        Currency currency = dbAdapter.getCrudCurrency().readCurrencyById(bill.getCurrencyId());
+        CurrencyCalculator calculator = CurrencyCalculatorFactory.getCalculatorForType(currency);
+        int amount = bill.getAmountInCent();
+        amount = calculator.exchangeAmount(amount);
         int numberOfDebtors = bill.getDebtorIds().size();
-        amount.divideByUsers(numberOfDebtors);
+        amount = calculator.divideByUsers(amount, numberOfDebtors + 1);
 
         CrudDebt crudDebt = dbAdapter.getCrudDebt();
 
         for (long debtorId : bill.getDebtorIds()) {
-            Debt debt = crudDebt.readDebtByPrimaryKey(bill.getPayerId(), debtorId);
-            if (debt == null) {
-                crudDebt.createDebt(bill.getPayerId(), debtorId, amount.getAmountInCent());
-            } else {
-                debt.increaseAmountInCent(amount.getAmountInCent());
-                crudDebt.updateDebt(debt);
-            }
+            crudDebt.createDebt(bill.getPayerId(), debtorId, bill.getId(), amount);
         }
     }
 
@@ -114,7 +114,7 @@ public final class CreateBill extends AppCompatActivity {
         Bill newBill = new Bill();
 
         //TODO: ERWEITERUNG Add Date on Bills
-        //TODO: If Payer Selected, selct other Users as Debtors
+        //TODO: ERWEITERUNG If Payer Selected, selct other Users as Debtors
 
         //Description
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
@@ -125,7 +125,6 @@ public final class CreateBill extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(getResources().getString(R.string.preference_currency_lastused), currencyAbreviation);
         editor.apply();
-        Currency amount = CurrencyFactory.getCurrencyOfType(currencyAbreviation);
 
         //AmountInteger
         EditText amountFieldInteger = (EditText) findViewById(R.id.et_BillAmountInteger);
@@ -145,8 +144,9 @@ public final class CreateBill extends AppCompatActivity {
             Log.e("NumberFormatException", nfe.toString());
         }
 
-        amount.setAmount(amountInCent * 100 + amountDecimal);
-        newBill.setAmount(amount);
+        newBill.setAmountInCent(amountInCent * 100 + amountDecimal);
+        newBill.setCurrencyId(dbAdapter.getCrudCurrency().readCurrencyByAbbreviation(currencyAbreviation).getId());
+
 
         //Trip
         newBill.setTripId(this.tripId);

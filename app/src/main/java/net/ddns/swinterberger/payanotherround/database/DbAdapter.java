@@ -19,6 +19,7 @@ public final class DbAdapter {
     private CrudAttend crudAttend;
     private CrudBillDebtors crudBillDebtor;
     private CrudDebt crudDebt;
+    private CrudCurrency crudCurrency;
 
     private SQLiteDatabase db;
 
@@ -83,5 +84,13 @@ public final class DbAdapter {
             crudDebt = new CrudDebt(db);
         }
         return crudDebt;
+    }
+
+    public final CrudCurrency getCrudCurrency() {
+        open();
+        if (crudCurrency == null) {
+            crudCurrency = new CrudCurrency(db);
+        }
+        return crudCurrency;
     }
 }

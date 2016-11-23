@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.ddns.swinterberger.payanotherround.currency.Currency;
-import net.ddns.swinterberger.payanotherround.currency.CurrencyFactory;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
 
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ public final class CrudBill {
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_DESCRIPTION = "description";
     private static final String ATTRIBUTE_AMOUNT_INTEGER = "amountInCent";
-    private static final String ATTRIBUTE_CURRENCY = "currency";
+    private static final String ATTRIBUTE_CURRENCY = "fk_currency";
     private static final String ATTRIBUTE_FK_TRIP = "fk_trip";
     private static final String ATTRIBUTE_FK_PAYERID = "fk_payer";
     private static final String TABLE_BILL = "bill";
@@ -36,8 +34,8 @@ public final class CrudBill {
     public long createBill(final Bill bill) {
         final ContentValues values = new ContentValues();
         values.put(ATTRIBUTE_DESCRIPTION, bill.getDescription());
-        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmount().getAmountInCent());
-        values.put(ATTRIBUTE_CURRENCY, bill.getAmount().getCurrencyAbbreviation());
+        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmountInCent());
+        values.put(ATTRIBUTE_CURRENCY, bill.getCurrencyId());
         values.put(ATTRIBUTE_FK_TRIP, bill.getTripId());
         values.put(ATTRIBUTE_FK_PAYERID, bill.getPayerId());
         final long id = database.insert(TABLE_BILL, null, values);
@@ -78,28 +76,12 @@ public final class CrudBill {
         return bills;
     }
 
-    public List<Bill> readAllBills() {
-        Bill bill;
-        ArrayList<Bill> bills = new ArrayList<>();
-        final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
-                null, null, null, null, null);
-        final boolean found = result.moveToFirst();
-        while (found && !result.isAfterLast()) {
-            bill = getNextBill(result);
-            bills.add(bill);
-        }
-        result.close();
-        return bills;
-    }
-
     private Bill getNextBill(final Cursor cursor) {
         final Bill bill = new Bill();
         bill.setId(cursor.getLong(0));
         bill.setDescription(cursor.getString(1));
-        Currency amount = CurrencyFactory.getCurrencyOfType(cursor.getString(3));
-        amount.setAmount(cursor.getInt(2));
-        bill.setAmount(amount);
+        bill.setCurrencyId(cursor.getLong(3));
+        bill.setAmountInCent(cursor.getInt(2));
         bill.setPayerId(cursor.getInt(4));
         bill.setTripId(cursor.getInt(5));
         cursor.moveToNext();

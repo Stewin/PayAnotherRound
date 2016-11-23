@@ -1,7 +1,5 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
-import net.ddns.swinterberger.payanotherround.currency.Currency;
-
 /**
  * Represents a Debt from a User to Another (Relationship Table).
  *
@@ -12,29 +10,27 @@ public final class Debt {
 
     private long creditorId;
     private long debtorId;
-    private Currency amount;
+    private long billId;
+    private int amountInCent;
 
-    public Debt(final long creditorId, final long debtorId,
-                final Currency amount) {
+    public Debt(final long creditorId, final long debtorId, final long billId,
+                final int amountInCent) {
         this.creditorId = creditorId;
         this.debtorId = debtorId;
-        this.amount = amount;
+        this.billId = billId;
+        this.amountInCent = amountInCent;
     }
 
-    public Currency getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Currency amount) {
-        this.amount = amount;
+    public long getBillId() {
+        return billId;
     }
 
     public final void increaseAmountInCent(final int amount) {
-        this.amount.addAmount(amount);
+        this.billId += amount;
     }
 
     public final void decreaseAmountInCent(final int amount) {
-        this.amount.subtractAmount(amount);
+        this.billId -= amount;
     }
 
     public final long getCreditorId() {
@@ -43,5 +39,9 @@ public final class Debt {
 
     public final long getDebtorId() {
         return debtorId;
+    }
+
+    public int getAmountInCent() {
+        return amountInCent;
     }
 }

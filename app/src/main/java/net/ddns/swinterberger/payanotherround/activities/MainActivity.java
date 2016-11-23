@@ -28,7 +28,6 @@ import android.widget.Toast;
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
-import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
 import java.util.ArrayList;
@@ -228,31 +227,24 @@ public final class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.delete:
+
+                //TODO: Auslagern und im TripChooserActivity wieder verwenden.
+                //Delete Bill
                 int position = ((AdapterView.AdapterContextMenuInfo) info).position;
                 long billId = bills.get(position).getId();
 
-                //TODO: BugFix Logic (Extract together with the same ine in the MainActivity).
-                Bill bill = dbAdapter.getCrudBill().readBillById(billId);
-                List<Long> debtors = dbAdapter.getCrudBillDebtor().readDebtorsByBillId(billId);
-                bill.setDebtorIds(debtors);
-                for (Long user : bill.getDebtorIds()) {
-                    Debt debt = dbAdapter.getCrudDebt().readDebtByPrimaryKey(bill.getPayerId(), user);
-                    if (debt != null) {
-                        debt.decreaseAmountInCent(bill.getAmount().getAmountInCent() / bill.getDebtorIds().size());
-                        dbAdapter.getCrudDebt().updateDebt(debt);
-                    }
-                }
+                //1. Delete Debts by Bill Id
+                dbAdapter.getCrudDebt().deleteDebtByBillId(billId);
 
-                //Delete bill_debtor Entries
+                //2. Delete Bill_Debtors by BillId
                 dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(billId);
 
-                //Delete the Bill itself in the DB
+                //3. Delete Bill
                 dbAdapter.getCrudBill().deleteBillById(billId);
 
-                //Delete the Bill in de List
-                for (Bill b : bills) {
-                    if (b.getId() == billId) {
-                        bills.remove(b);
+                for (Bill bill : bills) {
+                    if (bill.getId() == billId) {
+                        bills.remove(bill);
                     }
                 }
 
