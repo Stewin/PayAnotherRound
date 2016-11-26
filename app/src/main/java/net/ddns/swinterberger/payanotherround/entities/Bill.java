@@ -1,5 +1,6 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,11 +14,12 @@ public final class Bill {
     private long id;
     private String description;
     private long currencyId;
-    private int ammountInCent;
+    private int amountInCent;
     private Trip trip;
     private long tripId;
     private long payerId;
     private List<Long> debtorIds;
+    private String timestamp;
 
     public final long getId() {
         return id;
@@ -35,19 +37,19 @@ public final class Bill {
         this.description = description;
     }
 
-    public int getAmountInCent() {
-        return ammountInCent;
+    public final int getAmountInCent() {
+        return amountInCent;
     }
 
-    public void setAmountInCent(int ammountInCent) {
-        this.ammountInCent = ammountInCent;
+    public final void setAmountInCent(int ammountInCent) {
+        this.amountInCent = ammountInCent;
     }
 
-    public long getCurrencyId() {
+    public final long getCurrencyId() {
         return currencyId;
     }
 
-    public void setCurrencyId(long currencyId) {
+    public final void setCurrencyId(long currencyId) {
         this.currencyId = currencyId;
     }
 
@@ -67,19 +69,27 @@ public final class Bill {
         this.tripId = tripId;
     }
 
-    public long getPayerId() {
+    public final long getPayerId() {
         return payerId;
     }
 
-    public void setPayerId(long payerId) {
+    public final void setPayerId(long payerId) {
         this.payerId = payerId;
     }
 
-    public List<Long> getDebtorIds() {
-        return debtorIds;
+    public final List<Long> getDebtorIds() {
+        return Collections.unmodifiableList(debtorIds);
     }
 
-    public void setDebtorIds(List<Long> debtorIds) {
+    public final void setDebtorIds(List<Long> debtorIds) {
         this.debtorIds = debtorIds;
+    }
+
+    public final String getDate() {
+        return timestamp;
+    }
+
+    public final void setDate(final String date) {
+        this.timestamp = date;
     }
 }

@@ -233,6 +233,10 @@ public final class MainActivity extends AppCompatActivity {
                 new RecursiveBillManipulator(this).deleteBillRecursiveById(billId);
                 removeBillFromList(billId);
                 return true;
+            case R.id.edit:
+                //TODO: ERWEITERUNG Reopen and edit bills
+                Toast.makeText(this, "Feature coming soon!", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
@@ -291,6 +295,9 @@ public final class MainActivity extends AppCompatActivity {
 
                 TextView billDescription = (TextView) viewToReturn.findViewById(R.id.tv_billDescription);
                 billDescription.setText(bills.get(position).getDescription());
+
+                final TextView tvDate = (TextView) viewToReturn.findViewById(R.id.tv_billDate);
+                tvDate.setText(bills.get(position).getDate());
             }
             return viewToReturn;
         }

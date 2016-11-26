@@ -86,7 +86,6 @@ public final class CreateTrip extends AppCompatActivity {
                 refreshList();
 
                 //TODO: ERWEITERUNG Fotos and Colors for user
-                //TODO: ERWEITERUNG Reopen and edit bills
             }
         });
 

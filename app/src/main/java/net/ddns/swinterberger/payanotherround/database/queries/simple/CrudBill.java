@@ -24,6 +24,7 @@ public final class CrudBill {
     private static final String ATTRIBUTE_FK_TRIP = "fk_trip";
     private static final String ATTRIBUTE_FK_PAYERID = "fk_payer";
     private static final String TABLE_BILL = "bill";
+    private static final String ATTRIBUTE_TIMESTAMP = "Timestamp";
     private final SQLiteDatabase database;
 
 
@@ -47,7 +48,7 @@ public final class CrudBill {
     public Bill readBillById(final long id) {
         Bill bill = null;
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP, ATTRIBUTE_TIMESTAMP},
                 ATTRIBUTE_ID + "=" + id,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -63,7 +64,7 @@ public final class CrudBill {
         ArrayList<Bill> bills = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP, ATTRIBUTE_TIMESTAMP},
                 ATTRIBUTE_FK_TRIP + " = " + tripId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -81,7 +82,7 @@ public final class CrudBill {
         ArrayList<Bill> bills = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_BILL,
-                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP, ATTRIBUTE_TIMESTAMP},
                 ATTRIBUTE_FK_PAYERID + " = " + userId,
                 null, null, null, null);
         final boolean found = result.moveToFirst();
@@ -102,6 +103,7 @@ public final class CrudBill {
         bill.setAmountInCent(cursor.getInt(2));
         bill.setPayerId(cursor.getInt(4));
         bill.setTripId(cursor.getInt(5));
+        bill.setDate(cursor.getString(6));
         cursor.moveToNext();
         return bill;
     }

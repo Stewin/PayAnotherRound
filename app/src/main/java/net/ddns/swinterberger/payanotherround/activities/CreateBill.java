@@ -96,7 +96,8 @@ public final class CreateBill extends AppCompatActivity {
     private void createDebtEntries(Bill bill) {
 
         //TODO: Testen stabilisieren (Fehleingaben etc.)
-        //TODO: Special Cases. (a.e. If the Creditor don't have to pay etc.)
+        //TODO: Translate & Publish.
+        //TODO: ERWEITERUNG Special Cases. (a.e. If the Creditor don't have to pay etc.)
         //TODO: ERWEITERUNG Evtl. Kosten prozentual aufteilen
 
         Currency currency = dbAdapter.getCrudCurrency().readCurrencyById(bill.getCurrencyId());
@@ -115,8 +116,6 @@ public final class CreateBill extends AppCompatActivity {
 
     private Bill createBillFromActivity() {
         Bill newBill = new Bill();
-
-        //TODO: ERWEITERUNG Add Date on Bills
 
         //Description
         String description = ((EditText) findViewById(R.id.et_BillTitle)).getText().toString();
