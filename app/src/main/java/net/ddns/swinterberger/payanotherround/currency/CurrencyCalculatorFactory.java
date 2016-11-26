@@ -1,10 +1,11 @@
 package net.ddns.swinterberger.payanotherround.currency;
 
-/**
- * Created by Stefan on 14.11.2016.
- */
 
-public class CurrencyCalculatorFactory {
+public final class CurrencyCalculatorFactory {
+
+    private CurrencyCalculatorFactory() {
+
+    }
 
     public static final CurrencyCalculator getCalculatorForType(final Currency currency) {
 

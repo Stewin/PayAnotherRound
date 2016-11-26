@@ -22,13 +22,29 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CreateTrip"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.CreateBill"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.SummaryTripUsers" />
-        <activity android:name=".activities.UserSummary" />
-        <activity android:name=".activities.UserPreferenceActivity"></activity>
+        <activity
+            android:name=".activities.SummaryTripUsers"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.UserSummary"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.UserPreferenceActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activities.EditCurrencies"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="net.ddns.swinterberger.payanotherround.activities.EditCurrencies" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

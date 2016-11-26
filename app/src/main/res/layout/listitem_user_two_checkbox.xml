@@ -5,7 +5,7 @@
     android:orientation="horizontal">
 
     <CheckBox
-        android:id="@+id/cb_userbox"
+        android:id="@+id/cb_checkboxcreditor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -15,7 +15,7 @@
         android:paddingRight="10dp" />
 
     <CheckBox
-        android:id="@+id/cb_userbox2"
+        android:id="@+id/cb_checkboxDebtor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

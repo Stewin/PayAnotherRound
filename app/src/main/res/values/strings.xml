@@ -41,4 +41,9 @@
     <string name="currencyValue_euro">EUR</string>
     <string name="currencyValue_usdollar">USD</string>
     <string name="preference_currency_lastused">preference_currency_lastused</string>
+    <string name="CurrenySettingsKey">Currency Settings</string>
+    <string name="CurrencySummary">Edit the Currencies</string>
+    <string name="CurrencySettingsTitle">Currency Settings</string>
+    <string name="lable_editcurrencies">Edit Currencies</string>
+    <string name="lable_currency">Currency</string>
 </resources>

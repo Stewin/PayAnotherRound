@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,7 +27,7 @@ public final class CrudBill {
     private final SQLiteDatabase database;
 
 
-    CrudBill(final SQLiteDatabase database) {
+    public CrudBill(final SQLiteDatabase database) {
         this.database = database;
     }
 
@@ -76,6 +76,24 @@ public final class CrudBill {
         return bills;
     }
 
+    public final List<Bill> readBillsByCreditorId(final long userId) {
+        Bill bill;
+        ArrayList<Bill> bills = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_BILL,
+                new String[]{ATTRIBUTE_ID, ATTRIBUTE_DESCRIPTION, ATTRIBUTE_AMOUNT_INTEGER, ATTRIBUTE_CURRENCY, ATTRIBUTE_FK_PAYERID, ATTRIBUTE_FK_TRIP},
+                ATTRIBUTE_FK_PAYERID + " = " + userId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            bill = getNextBill(result);
+            bills.add(bill);
+        }
+        result.close();
+
+        return bills;
+    }
+
     private Bill getNextBill(final Cursor cursor) {
         final Bill bill = new Bill();
         bill.setId(cursor.getLong(0));
@@ -86,12 +104,6 @@ public final class CrudBill {
         bill.setTripId(cursor.getInt(5));
         cursor.moveToNext();
         return bill;
-    }
-
-    public boolean updateBill(final Bill user) {
-        final ContentValues values = new ContentValues();
-        values.put(ATTRIBUTE_DESCRIPTION, user.getDescription());
-        return database.update(TABLE_BILL, values, ATTRIBUTE_ID + user.getId(), null) > 0;
     }
 
     public boolean deleteBillById(final long id) {

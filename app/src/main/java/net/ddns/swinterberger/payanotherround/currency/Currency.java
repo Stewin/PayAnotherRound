@@ -17,31 +17,36 @@ public class Currency {
         this.exchangeRatio = 1;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(final long id) {
-        this.id = id;
-    }
-
-    public String getCurrencyAbbreviation() {
-        return currencyAbbreviation;
-    }
-
-    public void setCurrencyAbbreviation(String currencyAbbreviation) {
+    public Currency(final String currencyAbbreviation, final float exchangeRatio) {
         this.currencyAbbreviation = currencyAbbreviation;
-    }
-
-    public float getExchangeRatio() {
-        return exchangeRatio;
-    }
-
-    public void setExchangeRatio(float exchangeRatio) {
         this.exchangeRatio = exchangeRatio;
     }
 
-    public String amountToString(final long amountInCent) {
+    public final long getId() {
+        return id;
+    }
+
+    public final void setId(final long id) {
+        this.id = id;
+    }
+
+    public final String getCurrencyAbbreviation() {
+        return currencyAbbreviation;
+    }
+
+    public final void setCurrencyAbbreviation(String currencyAbbreviation) {
+        this.currencyAbbreviation = currencyAbbreviation;
+    }
+
+    public final float getExchangeRatio() {
+        return exchangeRatio;
+    }
+
+    public final void setExchangeRatio(float exchangeRatio) {
+        this.exchangeRatio = exchangeRatio;
+    }
+
+    public final String amountToString(final long amountInCent) {
 
         //Zehner Stelle
         long seconddigit = Math.abs((amountInCent / 10) % 10);

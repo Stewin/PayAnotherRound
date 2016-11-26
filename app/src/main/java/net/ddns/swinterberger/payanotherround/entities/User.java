@@ -1,9 +1,5 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
-import android.graphics.Color;
-
-import java.util.List;
-
 /**
  * Represents a User.
  *
@@ -15,9 +11,6 @@ public final class User {
     private static int userCounter = 0;
     private long id;
     private String name;
-    private Color color;
-    private List<Debt> debts;
-    //Image
 
     private boolean checkboxEnabled;
 

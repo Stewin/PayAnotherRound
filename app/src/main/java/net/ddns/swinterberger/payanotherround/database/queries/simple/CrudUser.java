@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -28,7 +28,7 @@ public final class CrudUser {
     private final SQLiteDatabase database;
 
 
-    CrudUser(final SQLiteDatabase database) {
+    public CrudUser(final SQLiteDatabase database) {
         this.database = database;
     }
 

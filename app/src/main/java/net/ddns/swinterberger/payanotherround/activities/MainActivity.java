@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.database.queries.recursive.RecursiveBillManipulator;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
@@ -227,35 +228,27 @@ public final class MainActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.delete:
-
-                //TODO: Auslagern und im TripChooserActivity wieder verwenden.
-                //Delete Bill
-                int position = ((AdapterView.AdapterContextMenuInfo) info).position;
+                int position = info.position;
                 long billId = bills.get(position).getId();
-
-                //1. Delete Debts by Bill Id
-                dbAdapter.getCrudDebt().deleteDebtByBillId(billId);
-
-                //2. Delete Bill_Debtors by BillId
-                dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(billId);
-
-                //3. Delete Bill
-                dbAdapter.getCrudBill().deleteBillById(billId);
-
-                for (Bill bill : bills) {
-                    if (bill.getId() == billId) {
-                        bills.remove(bill);
-                    }
-                }
-
-                refreshList();
+                new RecursiveBillManipulator(this).deleteBillRecursiveById(billId);
+                removeBillFromList(billId);
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
     }
 
-    private void showNoTripsDialogue(Context context) {
+    private void removeBillFromList(long billId) {
+        for (Bill bill : bills) {
+            if (bill.getId() == billId) {
+                bills.remove(bill);
+            }
+        }
+
+        refreshList();
+    }
+
+    private void showNoTripsDialogue(final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(getResources().getString(R.string.text_no_trip_selected));
         builder.setCancelable(false);
@@ -291,14 +284,15 @@ public final class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = MainActivity.this.getLayoutInflater().inflate(R.layout.listitem_bill_simple, null);
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            View viewToReturn = convertView;
+            if (viewToReturn == null) {
+                viewToReturn = MainActivity.this.getLayoutInflater().inflate(R.layout.listitem_bill_simple, null);
 
-                TextView billDescription = (TextView) convertView.findViewById(R.id.tv_billDescription);
+                TextView billDescription = (TextView) viewToReturn.findViewById(R.id.tv_billDescription);
                 billDescription.setText(bills.get(position).getDescription());
             }
-            return convertView;
+            return viewToReturn;
         }
     }
 }

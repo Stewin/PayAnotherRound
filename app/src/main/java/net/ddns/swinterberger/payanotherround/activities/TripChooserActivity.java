@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
-import net.ddns.swinterberger.payanotherround.entities.Bill;
+import net.ddns.swinterberger.payanotherround.database.queries.recursive.RecursiveBillManipulator;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 
 import java.util.ArrayList;
@@ -93,12 +93,6 @@ public final class TripChooserActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-//        dbAdapter.close();
-        super.onPause();
-    }
-
-    @Override
     public final void onCreateContextMenu(final ContextMenu menu, final View v,
                                           final ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -127,35 +121,27 @@ public final class TripChooserActivity extends AppCompatActivity {
 
             case R.id.delete:
 
-                for (Trip trip : trips) {
-                    if (trip.getId() == id) {
-                        trips.remove(trip);
-                        break;
-                    }
-                }
-
-                //TODO: Delete Bill auslagern (deleteBillRecursive) und in MainActivity wiederverwenden.
-                List<Bill> bills = dbAdapter.getCrudBill().readBillsByTripId(id);
-                for (Bill b : bills) {
-                    //1. Delete Debts by Bill Id
-                    dbAdapter.getCrudDebt().deleteDebtByBillId(b.getId());
-
-                    //2. Delete Bill_Debtors by BillId
-                    dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(b.getId());
-
-                    //3. Delete Bill
-                    dbAdapter.getCrudBill().deleteBillById(b.getId());
-                }
-
+                new RecursiveBillManipulator(this).deleteBillRecursiveByTripId(id);
                 dbAdapter.getCrudAttend().deleteAttendByTripId(id);
                 dbAdapter.getCrudTrip().deleteTripById(id);
-                refreshList();
+
+                removeTripFromList(id);
                 break;
 
             default:
                 return super.onContextItemSelected(item);
         }
         return true;
+    }
+
+    private void removeTripFromList(long id) {
+        for (Trip trip : trips) {
+            if (trip.getId() == id) {
+                trips.remove(trip);
+                break;
+            }
+        }
+        refreshList();
     }
 
     private void returnToMainActivityWithResult(final long chosenPosition) {
@@ -183,23 +169,24 @@ public final class TripChooserActivity extends AppCompatActivity {
         }
 
         @Override
-        public final View getView(final int position, View convertView,
+        public final View getView(final int position, final View convertView,
                                   final ViewGroup parent) {
-            if (convertView == null) {
-                convertView = TripChooserActivity.this.getLayoutInflater()
+            View viewToReturn = convertView;
+            if (viewToReturn == null) {
+                viewToReturn = TripChooserActivity.this.getLayoutInflater()
                         .inflate(R.layout.listitem_trip_simple, null);
 
-                TextView tripTitle = (TextView) convertView.findViewById(R.id.tv_tripTitle);
+                TextView tripTitle = (TextView) viewToReturn.findViewById(R.id.tv_tripTitle);
                 tripTitle.setText(trips.get(position).getName());
 
-                convertView.setOnClickListener(new View.OnClickListener() {
+                viewToReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         returnToMainActivityWithResult(trips.get(position).getId());
                     }
                 });
             }
-            return convertView;
+            return viewToReturn;
         }
     }
 }

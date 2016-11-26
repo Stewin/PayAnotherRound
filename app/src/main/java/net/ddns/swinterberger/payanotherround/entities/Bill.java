@@ -16,9 +16,7 @@ public final class Bill {
     private int ammountInCent;
     private Trip trip;
     private long tripId;
-    private User payer;
     private long payerId;
-    private List<User> debtors; //Schuldner
     private List<Long> debtorIds;
 
     public final long getId() {

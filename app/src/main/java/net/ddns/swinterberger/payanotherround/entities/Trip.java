@@ -1,7 +1,5 @@
 package net.ddns.swinterberger.payanotherround.entities;
 
-import java.util.List;
-
 /**
  * Represents a Trip.
  *
@@ -12,8 +10,6 @@ public final class Trip {
 
     private long id;
     private String name;
-    private List<User> users;
-    private List<Bill> bills;
 
     public final long getId() {
         return id;

@@ -18,6 +18,7 @@ public class UserPreferenceActivity extends PreferenceActivity {
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         getFragmentManager()
                 .beginTransaction()
                 .replace(android.R.id.content, new UserPreferenceInitializer())

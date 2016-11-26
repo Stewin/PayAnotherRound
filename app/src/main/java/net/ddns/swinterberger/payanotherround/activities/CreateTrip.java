@@ -19,6 +19,7 @@ import android.widget.ListView;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.database.queries.recursive.RecursiveUserManipulator;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
@@ -84,10 +85,8 @@ public final class CreateTrip extends AppCompatActivity {
                 dbAdapter.getCrudUser().createUser(user);
                 refreshList();
 
-                //TODO: BUGFIX focus Loss problem by enter the name
                 //TODO: ERWEITERUNG Fotos and Colors for user
                 //TODO: ERWEITERUNG Reopen and edit bills
-                //TODO: Testen stabilisieren (Fehleingaben etc.)
             }
         });
 
@@ -143,12 +142,6 @@ public final class CreateTrip extends AppCompatActivity {
         dbAdapter.open();
     }
 
-    @Override
-    protected void onPause() {
-//        dbAdapter.close();
-        super.onPause();
-    }
-
     private void refreshList() {
         if (this.userListView == null) {
             userListView = (ListView) findViewById(R.id.lv_Users);
@@ -175,21 +168,22 @@ public final class CreateTrip extends AppCompatActivity {
                 int position = info.position;
                 long id = allUsers.get(position).getId();
 
-                //TODO: BUGFIX deleting User.
-                //Delete existing Bills
-                //Delete existing attends
-                //Delete existing debts
-                dbAdapter.getCrudUser().deleteUserById(id);
-                for (User user : allUsers) {
-                    if (user.getId() == id) {
-                        allUsers.remove(user);
-                    }
-                }
-                refreshList();
+                new RecursiveUserManipulator(this).deleteUserRecursiveById(id);
+
+                removeUserFromList(id);
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void removeUserFromList(long id) {
+        for (User user : allUsers) {
+            if (user.getId() == id) {
+                allUsers.remove(user);
+            }
+        }
+        refreshList();
     }
 
     @Override
@@ -236,7 +230,7 @@ public final class CreateTrip extends AppCompatActivity {
                 });
                 nameField.setId(position);
 
-                CheckBox checkBox = (CheckBox) returnView.findViewById(R.id.cb_userbox);
+                CheckBox checkBox = (CheckBox) returnView.findViewById(R.id.cb_checkboxdebtor);
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {

@@ -12,6 +12,15 @@
             android:key="@string/preferncekey_current_currency"
             android:summary="%s"
             android:title="@string/prefs_currency_description" />
+
+        <Preference
+            android:key="@string/CurrenySettingsKey"
+            android:summary="@string/CurrencySummary"
+            android:title="@string/CurrencySettingsTitle">
+            <intent android:action="net.ddns.swinterberger.payanotherround.activities.EditCurrencies" />
+        </Preference>
+
+
     </PreferenceCategory>
 
 </PreferenceScreen>

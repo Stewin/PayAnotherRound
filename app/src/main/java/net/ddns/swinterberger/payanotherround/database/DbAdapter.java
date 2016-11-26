@@ -3,6 +3,14 @@ package net.ddns.swinterberger.payanotherround.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudAttend;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudBill;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudBillDebtors;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudCurrency;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudDebt;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudTrip;
+import net.ddns.swinterberger.payanotherround.database.queries.simple.CrudUser;
+
 /**
  * Adapter Class for Queries to the Database.
  *

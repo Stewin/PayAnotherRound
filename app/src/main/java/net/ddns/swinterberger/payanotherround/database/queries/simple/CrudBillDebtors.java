@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -23,7 +23,7 @@ public final class CrudBillDebtors {
 
     private final SQLiteDatabase database;
 
-    CrudBillDebtors(final SQLiteDatabase database) {
+    public CrudBillDebtors(final SQLiteDatabase database) {
         this.database = database;
     }
 
@@ -53,7 +53,29 @@ public final class CrudBillDebtors {
         return users;
     }
 
+    public List<Long> readBillsByDebtorId(final long debtorId) {
+        long bill;
+        ArrayList<Long> bills = new ArrayList<>();
+
+        final Cursor result = database.query(TABLE_BILL_DEBTORS,
+                new String[]{ATTRIBUTE_BILL_ID, ATTRIBUTE_USER_ID},
+                ATTRIBUTE_USER_ID + "=" + debtorId,
+                null, null, null, null);
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            bill = result.getLong(0);
+            bills.add(bill);
+            result.moveToNext();
+        }
+        result.close();
+        return bills;
+    }
+
     public boolean deleteBillDebtorByBillId(final long billId) {
         return database.delete(TABLE_BILL_DEBTORS, ATTRIBUTE_BILL_ID + "=" + billId, null) > 0;
+    }
+
+    public boolean deleteBillDebtorByUserId(final long userId) {
+        return database.delete(TABLE_BILL_DEBTORS, ATTRIBUTE_USER_ID + "=" + userId, null) > 0;
     }
 }

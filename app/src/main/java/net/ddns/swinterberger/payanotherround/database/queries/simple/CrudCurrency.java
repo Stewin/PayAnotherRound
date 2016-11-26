@@ -1,5 +1,6 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -23,10 +24,18 @@ public final class CrudCurrency {
 
     private final SQLiteDatabase database;
 
-    CrudCurrency(final SQLiteDatabase database) {
+    public CrudCurrency(final SQLiteDatabase database) {
         this.database = database;
     }
 
+
+    public long createCurrency(final Currency currency) {
+        ContentValues values = new ContentValues();
+        values.put(ATTRIBUTE_ABBREVIATION, currency.getCurrencyAbbreviation());
+        values.put(ATTRIBUTE_EXCHANGE_RATIO, currency.getExchangeRatio());
+
+        return database.insert(TABLE_CURRENCY, null, values);
+    }
 
     public final List<Currency> readAllCurrencies() {
 
@@ -59,17 +68,6 @@ public final class CrudCurrency {
         return currency;
     }
 
-    private Currency getNextCurrency(final Cursor result) {
-        Currency currency = new Currency();
-        currency.setId(result.getLong(0));
-        currency.setCurrencyAbbreviation(result.getString(1));
-        currency.setExchangeRatio(result.getFloat(2));
-
-        result.moveToNext();
-
-        return currency;
-    }
-
     public Currency readCurrencyById(final long currencyId) {
         Currency currency = null;
         final Cursor result = database.query(TABLE_CURRENCY,
@@ -81,6 +79,24 @@ public final class CrudCurrency {
             currency = getNextCurrency(result);
         }
         result.close();
+        return currency;
+    }
+
+    public boolean updateCurrency(final Currency currency) {
+        final ContentValues values = new ContentValues();
+        values.put(ATTRIBUTE_ABBREVIATION, currency.getCurrencyAbbreviation());
+        values.put(ATTRIBUTE_EXCHANGE_RATIO, currency.getExchangeRatio());
+        return database.update(TABLE_CURRENCY, values, ATTRIBUTE_ID + "=" + currency.getId(), null) > 0;
+    }
+
+    private Currency getNextCurrency(final Cursor result) {
+        Currency currency = new Currency();
+        currency.setId(result.getLong(0));
+        currency.setCurrencyAbbreviation(result.getString(1));
+        currency.setExchangeRatio(result.getFloat(2));
+
+        result.moveToNext();
+
         return currency;
     }
 }

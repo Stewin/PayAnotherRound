@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -24,7 +24,7 @@ public final class CrudAttend {
 
     private final SQLiteDatabase database;
 
-    CrudAttend(final SQLiteDatabase database) {
+    public CrudAttend(final SQLiteDatabase database) {
         this.database = database;
     }
 
@@ -36,7 +36,7 @@ public final class CrudAttend {
         return database.insert(TABLE_ATTEND, null, values);
     }
 
-    public List<Long> readUsersByTripId(final long tripId) {
+    public final List<Long> readUsersByTripId(final long tripId) {
         List<Long> userIds = new ArrayList<>();
 
         final Cursor result = database.query(TABLE_ATTEND, new String[]{ATTRIBUTE_USER_ID}, ATTRIBUTE_TRIP_ID + "=" + tripId,
@@ -56,8 +56,13 @@ public final class CrudAttend {
         return rowsAffected > 0;
     }
 
-    public boolean deleteAttendByTripId(final long tripId) {
+    public final boolean deleteAttendByTripId(final long tripId) {
         int rowsAffected = database.delete(TABLE_ATTEND, tripId + " = " + ATTRIBUTE_TRIP_ID, null);
+        return rowsAffected > 0;
+    }
+
+    public final boolean deleteAttendByUserId(final long userId) {
+        int rowsAffected = database.delete(TABLE_ATTEND, userId + " = " + ATTRIBUTE_USER_ID, null);
         return rowsAffected > 0;
     }
 }

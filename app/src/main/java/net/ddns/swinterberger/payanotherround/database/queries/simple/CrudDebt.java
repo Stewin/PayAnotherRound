@@ -1,4 +1,4 @@
-package net.ddns.swinterberger.payanotherround.database;
+package net.ddns.swinterberger.payanotherround.database.queries.simple;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,7 +27,7 @@ public final class CrudDebt {
 
     private final SQLiteDatabase database;
 
-    CrudDebt(final SQLiteDatabase database) {
+    public CrudDebt(final SQLiteDatabase database) {
         this.database = database;
     }
 
@@ -44,7 +44,7 @@ public final class CrudDebt {
     public final List<Debt> readDebtByCreditAndDebtor(final long creditorId, final long debtorId) {
 
         List<Debt> debts = new ArrayList<>();
-        Debt debt = null;
+        Debt debt;
         final Cursor result = database.query(TABLE_DEBT,
                 new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_BILL, ATTRIBUTE_AMOUNT},
                 ATTRIBUTE_CREDITOR + "=" + creditorId + " AND "

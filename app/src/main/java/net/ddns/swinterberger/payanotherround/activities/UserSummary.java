@@ -13,6 +13,7 @@ import android.widget.TextView;
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.currency.Currency;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
+import net.ddns.swinterberger.payanotherround.entities.Bill;
 import net.ddns.swinterberger.payanotherround.entities.Debt;
 import net.ddns.swinterberger.payanotherround.entities.User;
 
@@ -35,7 +36,6 @@ public final class UserSummary extends AppCompatActivity {
 
 
     private DbAdapter dbAdapter = new DbAdapter(this);
-    private String currentCurrency;
     private Currency currency;
 
     @Override
@@ -62,7 +62,7 @@ public final class UserSummary extends AppCompatActivity {
 
         //Get the Currency to Display.
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
+        String currentCurrency = preferences.getString(getResources().getString(R.string.preferncekey_current_currency), "CHF");
         currency = dbAdapter.getCrudCurrency().readCurrencyByAbbreviation(currentCurrency);
 
 
@@ -82,13 +82,20 @@ public final class UserSummary extends AppCompatActivity {
             //Get Debts for User
             List<Debt> tempDebts = dbAdapter.getCrudDebt().readDebtByCreditAndDebtor(userId, user.getId());
             for (Debt debt : tempDebts) {
-                amountInCent += debt.getAmountInCent();
+                //IF its from current Trip
+                Bill currentBill = dbAdapter.getCrudBill().readBillById(debt.getBillId());
+                if (currentBill.getTripId() == tripId) {
+                    amountInCent += debt.getAmountInCent();
+                }
             }
 
             //And subtract Credits for user.
             List<Debt> tempDebts2 = dbAdapter.getCrudDebt().readDebtByCreditAndDebtor(user.getId(), userId);
             for (Debt debt : tempDebts2) {
-                amountInCent -= debt.getAmountInCent();
+                Bill currentBill = dbAdapter.getCrudBill().readBillById(debt.getBillId());
+                if (currentBill.getTripId() == tripId) {
+                    amountInCent -= debt.getAmountInCent();
+                }
             }
             debts.add(new Debt(userId, userId, 0L, amountInCent));
         }
@@ -115,7 +122,8 @@ public final class UserSummary extends AppCompatActivity {
 
         @Override
         public long getItemId(final int position) {
-            return Long.parseLong(debts.get(position).getCreditorId() + "" + debts.get(position).getDebtorId());
+            Long value = debts.get(position).getCreditorId() + debts.get(position).getDebtorId();
+            return Long.parseLong(value.toString());
         }
 
         @Override
