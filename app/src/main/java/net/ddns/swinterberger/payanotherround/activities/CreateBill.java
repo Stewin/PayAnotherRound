@@ -95,8 +95,8 @@ public final class CreateBill extends AppCompatActivity {
 
     private void createDebtEntries(Bill bill) {
 
-        //TODO: Testen stabilisieren (Fehleingaben etc.)
-        //TODO: Translate & Publish.
+        //TODO: Testen stabilisieren (Fehleingaben, Listenanzeige etc.)
+        //TODO: Translate & Publish (Alpha Test).
         //TODO: ERWEITERUNG Special Cases. (a.e. If the Creditor don't have to pay etc.)
         //TODO: ERWEITERUNG Evtl. Kosten prozentual aufteilen
 
@@ -165,7 +165,7 @@ public final class CreateBill extends AppCompatActivity {
         ListView userList = (ListView) findViewById(R.id.lv_users);
         for (int i = 0; i < userList.getCount(); i++) {
             View v = userList.getChildAt(i);
-            CheckBox cbPayer = (CheckBox) v.findViewById(R.id.cb_checkboxDebtor);
+            CheckBox cbPayer = (CheckBox) v.findViewById(R.id.cb_checkboxcreditor);
             if (cbPayer.isChecked()) {
                 return users.get(i).getId();
             }
