@@ -243,12 +243,13 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private void removeBillFromList(long billId) {
-        for (Bill bill : bills) {
+
+        for (int i = 0; i < bills.size(); i++) {
+            Bill bill = bills.get(i);
             if (bill.getId() == billId) {
                 bills.remove(bill);
             }
         }
-
         refreshList();
     }
 

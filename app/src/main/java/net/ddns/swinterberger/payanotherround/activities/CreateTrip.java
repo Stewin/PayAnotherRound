@@ -222,12 +222,10 @@ public final class CreateTrip extends AppCompatActivity {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if (!hasFocus) {
-                            int position = v.getId();
                             allUsers.get(position).setName(((EditText) v).getText().toString());
                         }
                     }
                 });
-                nameField.setId(position);
 
                 CheckBox checkBox = (CheckBox) returnView.findViewById(R.id.cb_checkboxdebtor);
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.currency.Currency;
@@ -38,6 +39,7 @@ import java.util.List;
 public final class CreateBill extends AppCompatActivity {
 
     private List<User> users;
+    private ListView userList;
     private long tripId;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
@@ -75,22 +77,40 @@ public final class CreateBill extends AppCompatActivity {
 
         users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
-        ListView userList = (ListView) findViewById(R.id.lv_users);
+
+        refreshList();
+    }
+
+    private void refreshList() {
+        userList = (ListView) findViewById(R.id.lv_users);
         userList.setAdapter(new UserTwoCheckboxesListItemAdapter());
     }
 
     public final void onSaveButtonClicked(final View v) {
 
-        Bill bill = createBillFromActivity();
-        long billId = dbAdapter.getCrudBill().createBill(bill);
+        if (!isPayerSelected()) {
+            Toast.makeText(this, "Pleas choose a Payer first!", Toast.LENGTH_SHORT).show();
+        } else {
+            Bill bill = createBillFromActivity();
+            long billId = dbAdapter.getCrudBill().createBill(bill);
 
-        CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
-        for (long debtorId : bill.getDebtorIds()) {
-            crudBillDebtors.createBillDebtor(billId, debtorId);
+            CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
+            for (long debtorId : bill.getDebtorIds()) {
+                crudBillDebtors.createBillDebtor(billId, debtorId);
+            }
+            createDebtEntries(bill);
+
+            finish();
         }
-        createDebtEntries(bill);
+    }
 
-        finish();
+    private boolean isPayerSelected() {
+        for (User user : users) {
+            if (user.isPayer()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void createDebtEntries(Bill bill) {
@@ -164,9 +184,7 @@ public final class CreateBill extends AppCompatActivity {
     private long getIdOfPayer() {
         ListView userList = (ListView) findViewById(R.id.lv_users);
         for (int i = 0; i < userList.getCount(); i++) {
-            View v = userList.getChildAt(i);
-            CheckBox cbPayer = (CheckBox) v.findViewById(R.id.cb_checkboxcreditor);
-            if (cbPayer.isChecked()) {
+            if (users.get(i).isPayer()) {
                 return users.get(i).getId();
             }
         }
@@ -175,15 +193,26 @@ public final class CreateBill extends AppCompatActivity {
 
     private List<Long> getIdsOfDebtors() {
         List<Long> debtorIds = new ArrayList<>();
-        ListView userList = (ListView) findViewById(R.id.lv_users);
         for (int i = 0; i < userList.getCount(); i++) {
-            View v = userList.getChildAt(i);
-            CheckBox cbDebtor = (CheckBox) v.findViewById(R.id.cb_checkboxDebtor);
-            if (cbDebtor.isChecked()) {
+
+            if (users.get(i).isDebtor()) {
                 debtorIds.add(users.get(i).getId());
             }
         }
         return debtorIds;
+    }
+
+    private void setDebtors(final int position) {
+        for (int i = 0; i < users.size(); i++) {
+            if (i == position) {
+                users.get(i).setPayer(true);
+                users.get(i).setDebtor(false);
+            } else {
+                users.get(i).setPayer(false);
+                users.get(i).setDebtor(true);
+            }
+        }
+        refreshList();
     }
 
     private class UserTwoCheckboxesListItemAdapter extends BaseAdapter {
@@ -212,24 +241,17 @@ public final class CreateBill extends AppCompatActivity {
                 TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
                 nameField.setText(users.get(position).getName());
 
-                final CheckBox checkBoxDebtor = (CheckBox) returnView.findViewById(R.id.cb_checkboxcreditor);
-                checkBoxDebtor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                final CheckBox checkBoxCreditor = (CheckBox) returnView.findViewById(R.id.cb_checkboxcreditor);
+                checkBoxCreditor.setChecked(users.get(position).isPayer());
+                checkBoxCreditor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        ListView userList = (ListView) findViewById(R.id.lv_users);
-                        if (isChecked) {
-                            for (int i = 0; i < userList.getCount(); i++) {
-
-                                View listItem = userList.getChildAt(i);
-                                CheckBox cbDebtor = (CheckBox) listItem.findViewById(R.id.cb_checkboxDebtor);
-
-                                if (i != position) {
-                                    cbDebtor.setChecked(true);
-                                }
-                            }
-                        }
+                        setDebtors(position);
                     }
                 });
+
+                final CheckBox checkBoxDebtor = (CheckBox) returnView.findViewById(R.id.cb_checkboxDebtor);
+                checkBoxDebtor.setChecked(users.get(position).isDebtor());
             }
             return returnView;
         }

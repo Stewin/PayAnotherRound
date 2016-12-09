@@ -12,6 +12,9 @@ public final class User {
     private long id;
     private String name;
 
+    private boolean payer;
+    private boolean debtor;
+
     private boolean checkboxEnabled;
 
     public User() {
@@ -41,6 +44,22 @@ public final class User {
 
     public final void setCheckboxEnabled(final boolean checkboxEnabled) {
         this.checkboxEnabled = checkboxEnabled;
+    }
+
+    public boolean isPayer() {
+        return payer;
+    }
+
+    public void setPayer(boolean payer) {
+        this.payer = payer;
+    }
+
+    public boolean isDebtor() {
+        return debtor;
+    }
+
+    public void setDebtor(boolean debtor) {
+        this.debtor = debtor;
     }
 
     @Override
