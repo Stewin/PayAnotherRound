@@ -21,27 +21,25 @@
     <string name="title">Title</string>
     <string name="name">Name</string>
     <string name="title_activity_user_preference">Settings</string>
-    <string name="lable_ok">OK</string>
+    <string name="lable_ok" translatable="false">OK</string>
     <string name="about_developers_title">Developers</string>
     <string name="about_developers_text">Current Developer:\nStefan Winterberger\n\nOriginal Developer:\nStefan Winterberger</string>
     <string name="about_copyright_title">Copyright</string>
     <string name="about_copyright_text">Stefan Winterberger, 2016</string>
     <string name="about_contact_title">Contact</string>
-    <string name="about_contact_text" />
-    <string name="preferncekey_current_currency">preferencekey_current_currency</string>
-    <string name="prefs_currency">prefs_currency</string>
-    <string name="name_currency">Currency</string>
+    <string name="preferncekey_current_currency" translatable="false">preferencekey_current_currency</string>
+    <string name="prefs_currency" translatable="false">prefs_currency</string>
     <string name="prefs_currency_description">Default Currency for the App</string>
 
     <string name="preference_currency_swissfranc">Swiss Franc</string>
     <string name="preference_currency_euro">Euro</string>
     <string name="preference_currency_usdollar">US Dollar</string>
 
-    <string name="currencyValue_swissfranc">CHF</string>
-    <string name="currencyValue_euro">EUR</string>
-    <string name="currencyValue_usdollar">USD</string>
-    <string name="preference_currency_lastused">preference_currency_lastused</string>
-    <string name="CurrenySettingsKey">Currency Settings</string>
+    <string name="currencyValue_swissfranc" translatable="false">CHF</string>
+    <string name="currencyValue_euro" translatable="false">EUR</string>
+    <string name="currencyValue_usdollar" translatable="false">USD</string>
+    <string name="preference_currency_lastused" translatable="false">preference_currency_lastused</string>
+    <string name="CurrenySettingsKey" translatable="false">Currency Settings</string>
     <string name="CurrencySummary">Edit the Currencies</string>
     <string name="CurrencySettingsTitle">Currency Settings</string>
     <string name="lable_editcurrencies">Edit Currencies</string>

@@ -16,4 +16,20 @@
     <string name="lable_summary">Zämefassig</string>
     <string name="lable_yes">Ja</string>
     <string name="text_no_trip_selected">Kei Trips vorhandä. Wetsch du zu Tripihstellige wächsle fürnä neue Trip zerstelle?</string>
+    <string name="CurrencySettingsTitle">Währigs Ihstellige</string>
+    <string name="CurrencySummary">Währig Zämefassig</string>
+    <string name="about_contact_title">Kontakt</string>
+    <string name="about_copyright_text">Stefan Winterberger, 2016</string>
+    <string name="about_copyright_title">Copyright</string>
+    <string name="about_developers_text">Aktuellä Entwickler: Stefan Winterberger Original Entwickler: Stefan Winterberger</string>
+    <string name="about_developers_title">Entwicklär</string>
+    <string name="lable_currency">Währig</string>
+    <string name="lable_editcurrencies">Währigä bearbeite</string>
+    <string name="name">Namä</string>
+    <string name="preference_currency_euro">Euro</string>
+    <string name="preference_currency_swissfranc">Schwizer Frankä</string>
+    <string name="preference_currency_usdollar">US Dollär</string>
+    <string name="prefs_currency_description">Standardwährig für t\'App</string>
+    <string name="title">Titäl</string>
+    <string name="title_activity_user_preference">Ihstellige</string>
 </resources>

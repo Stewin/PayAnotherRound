@@ -17,4 +17,22 @@
     <string name="lable_summary">Zusammenfassung</string>
     <string name="lable_yes">Ja</string>
     <string name="text_no_trip_selected">Keine Trips vorhanden. Möchten Sie zu den Tripeinstellungen wechseln um einen Trip zu erfassen?</string>
+    <string name="CurrencySettingsTitle">Währungs Einstellungen</string>
+    <string name="CurrencySummary">Währung Zusammenfassung</string>
+    <string name="about_contact_title">Kontakt</string>
+    <string name="about_copyright_text">Stefan Winterberger, 2016</string>
+    <string name="about_copyright_title">Copyright</string>
+    <string name="about_developers_text">Aktueller Entwickler: Stefan Winterberger Original Entwickler: Stefan Winterberger</string>
+    <string name="about_developers_title">Entwickler</string>
+    <string name="currencyValue_euro"></string>
+    <string name="lable_currency">Währung</string>
+    <string name="lable_editcurrencies">Währungen bearbeiten</string>
+    <string name="name">Name</string>
+    <string name="name_currency"></string>
+    <string name="preference_currency_euro">Euro</string>
+    <string name="preference_currency_swissfranc">Schweizer Franken</string>
+    <string name="preference_currency_usdollar">US Dollar</string>
+    <string name="prefs_currency_description">Standardwährung für die App</string>
+    <string name="title">Titel</string>
+    <string name="title_activity_user_preference">Einstellungen</string>
 </resources>
