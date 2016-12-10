@@ -20,13 +20,21 @@ public class RecursiveUserManipulator {
         this.dbAdapter = new DbAdapter(context);
     }
 
+    /**
+     * Deletes a User if no Debts are open from him.
+     *
+     * @param userId User to delete.
+     * @return 0 if Successful -1 otherwise.
+     */
     public final int deleteUserRecursiveById(final long userId) {
 
-        new RecursiveBillManipulator(context).deleteBillRecursiveByUserId(userId);
-        dbAdapter.getCrudAttend().deleteAttendByUserId(userId);
-        dbAdapter.getCrudUser().deleteUserById(userId);
-
-        return 0;
+        if (new RecursiveBillManipulator(context).deleteBillByUserIdIfNoDebtsAreLeft(userId) == 0) {
+            dbAdapter.getCrudAttend().deleteAttendByUserId(userId);
+            dbAdapter.getCrudUser().deleteUserById(userId);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
 }

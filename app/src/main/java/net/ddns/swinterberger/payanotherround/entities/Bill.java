@@ -15,7 +15,6 @@ public final class Bill {
     private String description;
     private long currencyId;
     private int amountInCent;
-    private Trip trip;
     private long tripId;
     private long payerId;
     private List<Long> debtorIds;
@@ -51,14 +50,6 @@ public final class Bill {
 
     public final void setCurrencyId(long currencyId) {
         this.currencyId = currencyId;
-    }
-
-    public final Trip getTrip() {
-        return trip;
-    }
-
-    public final void setTrip(final Trip trip) {
-        this.trip = trip;
     }
 
     public final long getTripId() {

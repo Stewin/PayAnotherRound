@@ -60,6 +60,23 @@ public final class CrudDebt {
         return debts;
     }
 
+    public List<Debt> readDebtByDebtor(final long userId) {
+        List<Debt> debts = new ArrayList<>();
+        Debt debt;
+        final Cursor result = database.query(TABLE_DEBT,
+                new String[]{ATTRIBUTE_CREDITOR, ATTRIBUTE_DEBTOR, ATTRIBUTE_BILL, ATTRIBUTE_AMOUNT},
+                ATTRIBUTE_DEBTOR + " = " + userId, null, null, null, null);
+
+        final boolean found = result.moveToFirst();
+        while (found && !result.isAfterLast()) {
+            debt = getNextDebt(result);
+            debts.add(debt);
+        }
+        result.close();
+
+        return debts;
+    }
+
     private Debt getNextDebt(final Cursor cursor) {
 
         int creditorId = cursor.getInt(0);

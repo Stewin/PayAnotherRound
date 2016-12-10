@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
@@ -167,10 +168,14 @@ public final class CreateTrip extends AppCompatActivity {
                 int position = info.position;
                 long id = allUsers.get(position).getId();
 
-                new RecursiveUserManipulator(this).deleteUserRecursiveById(id);
+                if (new RecursiveUserManipulator(this).deleteUserRecursiveById(id) == 0) {
+                    removeUserFromList(id);
+                    return true;
+                } else {
+                    Toast.makeText(this, "User has open debts! Can't be deleted.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
 
-                removeUserFromList(id);
-                return true;
             default:
                 return super.onContextItemSelected(item);
         }

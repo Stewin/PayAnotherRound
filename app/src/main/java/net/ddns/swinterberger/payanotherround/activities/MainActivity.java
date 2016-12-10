@@ -227,16 +227,18 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
+        long billId = bills.get(position).getId();
         switch (item.getItemId()) {
             case R.id.delete:
-                int position = info.position;
-                long billId = bills.get(position).getId();
                 new RecursiveBillManipulator(this).deleteBillRecursiveById(billId);
                 removeBillFromList(billId);
                 return true;
             case R.id.edit:
-                //TODO: ERWEITERUNG Reopen and edit bills
-                Toast.makeText(this, "Feature coming soon!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, CreateBill.class);
+                intent.putExtra(getResources().getString(R.string.extra_billId), billId);
+                intent.putExtra(getResources().getString(R.string.extra_tripid), currentTripId);
+                startActivity(intent);
                 return true;
             default:
                 return super.onContextItemSelected(item);

@@ -95,6 +95,17 @@ public final class CrudBill {
         return bills;
     }
 
+    public boolean updateBill(final Bill bill) {
+        final ContentValues values = new ContentValues();
+        values.put(ATTRIBUTE_AMOUNT_INTEGER, bill.getAmountInCent());
+        values.put(ATTRIBUTE_CURRENCY, bill.getCurrencyId());
+        values.put(ATTRIBUTE_DESCRIPTION, bill.getDescription());
+        values.put(ATTRIBUTE_FK_PAYERID, bill.getPayerId());
+        values.put(ATTRIBUTE_FK_TRIP, bill.getTripId());
+        values.put(ATTRIBUTE_TIMESTAMP, bill.getDate());
+        return database.update(TABLE_BILL, values, ATTRIBUTE_ID + "=" + bill.getId(), null) > 0;
+    }
+
     private Bill getNextBill(final Cursor cursor) {
         final Bill bill = new Bill();
         bill.setId(cursor.getLong(0));

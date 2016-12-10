@@ -4,6 +4,7 @@ import android.content.Context;
 
 import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
+import net.ddns.swinterberger.payanotherround.entities.Debt;
 
 import java.util.List;
 
@@ -52,10 +53,24 @@ public final class RecursiveBillManipulator {
         //Remove User from Bills as Debtor.
         dbAdapter.getCrudBillDebtor().deleteBillDebtorByUserId(userId);
 
-        //TODO: ERWEITERUNG Update the Debt-Entries for recalculated  Debts from the Bill where the user is removed.
-        //Alternative. Decide that its forbidden to remove Users when there are open bills.
-
         return 0;
+    }
+
+    /**
+     * Deletes a User only if the User has no Debts open.
+     *
+     * @param userId User to delete.
+     * @return 0 if Successful -1 otherwise.
+     */
+    public int deleteBillByUserIdIfNoDebtsAreLeft(final long userId) {
+
+        //Check if User still have Debts.
+        List<Debt> debts = dbAdapter.getCrudDebt().readDebtByDebtor(userId);
+        if (!debts.isEmpty()) {
+            return -1;
+        } else {
+            return deleteBillRecursiveByUserId(userId);
+        }
     }
 
 }

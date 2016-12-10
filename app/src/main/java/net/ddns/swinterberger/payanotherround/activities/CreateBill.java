@@ -41,6 +41,7 @@ public final class CreateBill extends AppCompatActivity {
     private List<User> users;
     private ListView userList;
     private long tripId;
+    private long billId;
 
     private DbAdapter dbAdapter = new DbAdapter(this);
     private String[] currencyList;
@@ -64,19 +65,54 @@ public final class CreateBill extends AppCompatActivity {
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
-        preferences = getPreferences(MODE_PRIVATE);
-        String lastUsedCurrency = preferences.getString(getResources().getString(R.string.preference_currency_lastused), "CHF");
 
-        for (int i = 0; i < currencyList.length; i++) {
-            if (currencyList[i].equals(lastUsedCurrency)) {
-                spinnerCurrency.setSelection(i);
-            }
-        }
+        billId = getIntent().getLongExtra(getResources().getString(R.string.extra_billId), -1);
 
         tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
-
         users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
 
+
+        if (billId != -1) {
+            //Load Existing Bill
+            Bill billToEdit = dbAdapter.getCrudBill().readBillById(billId);
+
+            EditText billDescription = (EditText) this.findViewById(R.id.et_BillTitle);
+            billDescription.setText(billToEdit.getDescription());
+
+            EditText amountFieldInteger = (EditText) this.findViewById(R.id.et_BillAmountInteger);
+            amountFieldInteger.setText(String.valueOf(billToEdit.getAmountInCent() / 100));
+
+            EditText amountFieldDecimal = (EditText) this.findViewById(R.id.et_BillAmountDecimal);
+            amountFieldDecimal.setText(String.valueOf(billToEdit.getAmountInCent() % 100));
+
+
+            for (User user : users) {
+                if (user.getId() == billToEdit.getPayerId()) {
+                    user.setPayer(true);
+                }
+            }
+
+            billToEdit.setDebtorIds(dbAdapter.getCrudBillDebtor().readDebtorsByBillId(billId));
+
+            for (long debtorId : billToEdit.getDebtorIds()) {
+                for (User user : users) {
+                    if (user.getId() == debtorId) {
+                        user.setDebtor(true);
+                    }
+                }
+            }
+
+        } else {
+            //Prepare new Bill
+            preferences = getPreferences(MODE_PRIVATE);
+            String lastUsedCurrency = preferences.getString(getResources().getString(R.string.preference_currency_lastused), "CHF");
+
+            for (int i = 0; i < currencyList.length; i++) {
+                if (currencyList[i].equals(lastUsedCurrency)) {
+                    spinnerCurrency.setSelection(i);
+                }
+            }
+        }
 
         refreshList();
     }
@@ -91,15 +127,35 @@ public final class CreateBill extends AppCompatActivity {
         if (!isPayerSelected()) {
             Toast.makeText(this, "Pleas choose a Payer first!", Toast.LENGTH_SHORT).show();
         } else {
-            Bill bill = createBillFromActivity();
-            long billId = dbAdapter.getCrudBill().createBill(bill);
+            if (billId >= 0) {
+                Bill bill = createBillFromActivity();
+                bill.setId(billId);
 
-            CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
-            for (long debtorId : bill.getDebtorIds()) {
-                crudBillDebtors.createBillDebtor(billId, debtorId);
+                //UpdateBillDebtors
+                dbAdapter.getCrudBillDebtor().deleteBillDebtorByBillId(billId);
+                CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
+                for (long debtorId : bill.getDebtorIds()) {
+                    crudBillDebtors.createBillDebtor(billId, debtorId);
+                }
+
+                //UpdateDebtEntries
+                dbAdapter.getCrudDebt().deleteDebtByBillId(billId);
+                createDebtEntries(bill);
+
+                //UpdateBill
+                dbAdapter.getCrudBill().updateBill(bill);
+
+            } else {
+
+                Bill bill = createBillFromActivity();
+                long billId = dbAdapter.getCrudBill().createBill(bill);
+
+                CrudBillDebtors crudBillDebtors = dbAdapter.getCrudBillDebtor();
+                for (long debtorId : bill.getDebtorIds()) {
+                    crudBillDebtors.createBillDebtor(billId, debtorId);
+                }
+                createDebtEntries(bill);
             }
-            createDebtEntries(bill);
-
             finish();
         }
     }
