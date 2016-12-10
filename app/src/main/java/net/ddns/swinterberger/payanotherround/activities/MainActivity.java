@@ -30,6 +30,7 @@ import net.ddns.swinterberger.payanotherround.database.DbAdapter;
 import net.ddns.swinterberger.payanotherround.database.queries.recursive.RecursiveBillManipulator;
 import net.ddns.swinterberger.payanotherround.entities.Bill;
 import net.ddns.swinterberger.payanotherround.entities.Trip;
+import net.ddns.swinterberger.payanotherround.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +189,7 @@ public final class MainActivity extends AppCompatActivity {
             billList = (ListView) findViewById(R.id.lv_Bills);
             registerForContextMenu(billList);
         }
-        billList.setAdapter(new SimpleTripListItemAdapter());
+        billList.setAdapter(new SimpleBillListItemAdapter());
     }
 
     private void loadBills() {
@@ -271,7 +272,7 @@ public final class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
-    private class SimpleTripListItemAdapter extends BaseAdapter {
+    private class SimpleBillListItemAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -294,11 +295,18 @@ public final class MainActivity extends AppCompatActivity {
             if (viewToReturn == null) {
                 viewToReturn = MainActivity.this.getLayoutInflater().inflate(R.layout.listitem_bill_simple, null);
 
-                TextView billDescription = (TextView) viewToReturn.findViewById(R.id.tv_billDescription);
+                final TextView billDescription = (TextView) viewToReturn.findViewById(R.id.tv_billDescription);
                 billDescription.setText(bills.get(position).getDescription());
 
                 final TextView tvDate = (TextView) viewToReturn.findViewById(R.id.tv_billDate);
                 tvDate.setText(bills.get(position).getDate());
+
+                final TextView billPayer = (TextView) viewToReturn.findViewById(R.id.tv_payer);
+                User user = dbAdapter.getCrudUser().readUserById(bills.get(position).getPayerId());
+                billPayer.setText(String.valueOf(user.getName()));
+
+                final TextView billAmount = (TextView) viewToReturn.findViewById(R.id.tv_amount);
+                billAmount.setText(String.valueOf((float) bills.get(position).getAmountInCent() / 100));
             }
             return viewToReturn;
         }

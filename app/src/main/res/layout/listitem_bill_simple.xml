@@ -8,7 +8,9 @@
         android:id="@+id/tv_billDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:longClickable="false"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -22,5 +24,46 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_lblAmount"
+        android:layout_alignBottom="@+id/tv_lblAmount"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_toEndOf="@+id/tv_lblAmount"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_payer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_amount"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_toEndOf="@+id/tv_lblAmount"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tv_lblPayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_billDescription"
+        android:layout_below="@+id/tv_billDescription"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:text="Payer:" />
+
+    <TextView
+        android:id="@+id/tv_lblAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_billDescription"
+        android:layout_below="@+id/tv_lblPayer"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:text="Amount:" />
 
 </RelativeLayout>
