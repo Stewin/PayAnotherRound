@@ -3,7 +3,7 @@
 
     <PreferenceCategory
         android:key="@string/prefs_currency"
-        android:title="@string/name_currency">
+        android:title="@string/lable_currency">
 
         <ListPreference
             android:defaultValue="start"

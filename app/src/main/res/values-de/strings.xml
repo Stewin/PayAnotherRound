@@ -28,7 +28,6 @@
     <string name="lable_currency">Währung</string>
     <string name="lable_editcurrencies">Währungen bearbeiten</string>
     <string name="name">Name</string>
-    <string name="name_currency"></string>
     <string name="preference_currency_euro">Euro</string>
     <string name="preference_currency_swissfranc">Schweizer Franken</string>
     <string name="preference_currency_usdollar">US Dollar</string>

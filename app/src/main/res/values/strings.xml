@@ -44,5 +44,5 @@
     <string name="CurrencySettingsTitle">Currency Settings</string>
     <string name="lable_editcurrencies">Edit Currencies</string>
     <string name="lable_currency">Currency</string>
-    <string name="extra_billId">extra_bill_id</string>
+    <string name="extra_billId" translatable="false">extra_bill_id</string>
 </resources>

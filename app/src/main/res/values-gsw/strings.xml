@@ -33,4 +33,5 @@
     <string name="prefs_currency_description">Standardwährig für t\'App</string>
     <string name="title">Titäl</string>
     <string name="title_activity_user_preference">Ihstellige</string>
+    <string name="currencyValue_euro" translatable="false"></string>
 </resources>
