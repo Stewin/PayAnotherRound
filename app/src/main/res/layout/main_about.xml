@@ -35,7 +35,6 @@
                     android:id="@+id/tv_AboutTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/iv_App"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/iv_AppIcon"
                     android:text="Pay Another Round"

@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/actionbaritem_trip_settings"
-        android:icon="@android:drawable/ic_input_add"
-        android:title="@string/actionbaritem_settings"
-        app:showAsAction="always" />
+            android:id="@+id/actionbaritem_trip_settings"
+            android:icon="@android:drawable/ic_input_add"
+            android:title="@string/actionbaritem_settings"
+            app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/actionbaritem_settings"
-        android:icon="@drawable/actionbaritem_settings"
-        android:title="@string/actionbaritem_settings"
-        app:showAsAction="always">
+            android:id="@+id/actionbaritem_settings"
+            android:icon="@drawable/actionbaritem_settings"
+            android:title="@string/actionbaritem_settings"
+            app:showAsAction="ifRoom">
 
         <menu>
             <item
-                android:id="@+id/menuItemSettings"
-                android:title="Settings" />
+                    android:id="@+id/menuItemSettings"
+                    android:title="@string/label_settings"/>
             <item
-                android:id="@+id/menuItemAbout"
-                android:title="About" />
+                    android:id="@+id/menuItemAbout"
+                    android:title="@string/label_about"/>
         </menu>
 
     </item>

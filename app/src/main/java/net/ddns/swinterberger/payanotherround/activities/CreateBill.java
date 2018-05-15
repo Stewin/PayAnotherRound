@@ -7,16 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import net.ddns.swinterberger.payanotherround.R;
 import net.ddns.swinterberger.payanotherround.currency.Currency;
 import net.ddns.swinterberger.payanotherround.currency.CurrencyCalculator;
@@ -47,6 +38,7 @@ public final class CreateBill extends AppCompatActivity {
     private String[] currencyList;
     private Spinner spinnerCurrency;
     private SharedPreferences preferences;
+    private UserTwoCheckboxesListItemAdapter userListItemAdapter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -57,6 +49,41 @@ public final class CreateBill extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        initializeCurrencySpinner();
+
+        billId = getIntent().getLongExtra(getResources().getString(R.string.extra_billId), -1);
+        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
+        users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
+
+        userListItemAdapter = new UserTwoCheckboxesListItemAdapter();
+
+        if (billId != -1) {
+            loadExistingBill();
+        } else {
+            prepareNewBill();
+        }
+
+        refreshList();
+    }
+
+    private void prepareNewBill() {
+        preferences = getPreferences(MODE_PRIVATE);
+        String lastUsedCurrency = preferences.getString(getResources().getString(R.string.preference_currency_lastused), "CHF");
+
+        for (int i = 0; i < currencyList.length; i++) {
+            if (currencyList[i].equals(lastUsedCurrency)) {
+                spinnerCurrency.setSelection(i);
+            }
+        }
+    }
+
+    private void loadExistingBill() {
+        Bill billToEdit = dbAdapter.getCrudBill().readBillById(billId);
+        displayBill(billToEdit);
+        setUserCheckboxesForBill(billToEdit);
+    }
+
+    private void initializeCurrencySpinner() {
         spinnerCurrency = (Spinner) findViewById(R.id.sp_Currency);
         List<Currency> currencies = dbAdapter.getCrudCurrency().readAllCurrencies();
         currencyList = new String[currencies.size()];
@@ -65,61 +92,40 @@ public final class CreateBill extends AppCompatActivity {
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencyList);
         spinnerCurrency.setAdapter(arrayAdapter);
+    }
 
-        billId = getIntent().getLongExtra(getResources().getString(R.string.extra_billId), -1);
-
-        tripId = getIntent().getLongExtra(getResources().getString(R.string.extra_tripid), -1);
-        users = dbAdapter.getCrudUser().readUsersByTripId(tripId);
-
-
-        if (billId != -1) {
-            //Load Existing Bill
-            Bill billToEdit = dbAdapter.getCrudBill().readBillById(billId);
-
-            EditText billDescription = (EditText) this.findViewById(R.id.et_BillTitle);
-            billDescription.setText(billToEdit.getDescription());
-
-            EditText amountFieldInteger = (EditText) this.findViewById(R.id.et_BillAmountInteger);
-            amountFieldInteger.setText(String.valueOf(billToEdit.getAmountInCent() / 100));
-
-            EditText amountFieldDecimal = (EditText) this.findViewById(R.id.et_BillAmountDecimal);
-            amountFieldDecimal.setText(String.valueOf(billToEdit.getAmountInCent() % 100));
-
-
-            for (User user : users) {
-                if (user.getId() == billToEdit.getPayerId()) {
-                    user.setPayer(true);
-                }
-            }
-
-            billToEdit.setDebtorIds(dbAdapter.getCrudBillDebtor().readDebtorsByBillId(billId));
-
-            for (long debtorId : billToEdit.getDebtorIds()) {
-                for (User user : users) {
-                    if (user.getId() == debtorId) {
-                        user.setDebtor(true);
-                    }
-                }
-            }
-
-        } else {
-            //Prepare new Bill
-            preferences = getPreferences(MODE_PRIVATE);
-            String lastUsedCurrency = preferences.getString(getResources().getString(R.string.preference_currency_lastused), "CHF");
-
-            for (int i = 0; i < currencyList.length; i++) {
-                if (currencyList[i].equals(lastUsedCurrency)) {
-                    spinnerCurrency.setSelection(i);
-                }
+    private void setUserCheckboxesForBill(Bill bill) {
+        for (User user : users) {
+            if (user.getId() == bill.getPayerId()) {
+                user.setPayer(true);
             }
         }
 
-        refreshList();
+        bill.setDebtorIds(dbAdapter.getCrudBillDebtor().readDebtorsByBillId(billId));
+
+        for (long debtorId : bill.getDebtorIds()) {
+            for (User user : users) {
+                if (user.getId() == debtorId) {
+                    user.setDebtor(true);
+                }
+            }
+        }
+    }
+
+    private void displayBill(Bill billToDisplay) {
+        EditText billDescription = (EditText) this.findViewById(R.id.et_BillTitle);
+        billDescription.setText(billToDisplay.getDescription());
+
+        EditText amountFieldInteger = (EditText) this.findViewById(R.id.et_BillAmountInteger);
+        amountFieldInteger.setText(String.valueOf(billToDisplay.getAmountInCent() / 100));
+
+        EditText amountFieldDecimal = (EditText) this.findViewById(R.id.et_BillAmountDecimal);
+        amountFieldDecimal.setText(String.valueOf(billToDisplay.getAmountInCent() % 100));
     }
 
     private void refreshList() {
         userList = (ListView) findViewById(R.id.lv_users);
-        userList.setAdapter(new UserTwoCheckboxesListItemAdapter());
+        userList.setAdapter(userListItemAdapter);
     }
 
     public final void onSaveButtonClicked(final View v) {
@@ -293,22 +299,29 @@ public final class CreateBill extends AppCompatActivity {
             View returnView = convertView;
             if (returnView == null) {
                 returnView = CreateBill.this.getLayoutInflater().inflate(R.layout.listitem_user_two_checkbox, null);
-
-                TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
-                nameField.setText(users.get(position).getName());
-
-                final CheckBox checkBoxCreditor = (CheckBox) returnView.findViewById(R.id.cb_checkboxcreditor);
-                checkBoxCreditor.setChecked(users.get(position).isPayer());
-                checkBoxCreditor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        setDebtors(position);
-                    }
-                });
-
-                final CheckBox checkBoxDebtor = (CheckBox) returnView.findViewById(R.id.cb_checkboxDebtor);
-                checkBoxDebtor.setChecked(users.get(position).isDebtor());
             }
+
+            TextView nameField = (TextView) returnView.findViewById(R.id.tv_Name);
+            nameField.setText(users.get(position).getName());
+
+            final CheckBox checkBoxCreditor = (CheckBox) returnView.findViewById(R.id.cb_checkboxcreditor);
+            checkBoxCreditor.setChecked(users.get(position).isPayer());
+            checkBoxCreditor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    setDebtors(position);
+                }
+            });
+
+            final CheckBox checkBoxDebtor = (CheckBox) returnView.findViewById(R.id.cb_checkboxDebtor);
+            checkBoxDebtor.setChecked(users.get(position).isDebtor());
+            checkBoxDebtor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    users.get(position).setDebtor(b);
+                }
+            });
+
             return returnView;
         }
     }

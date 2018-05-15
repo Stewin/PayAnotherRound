@@ -3,7 +3,7 @@
     <string name="app_name">Noch eine Runde</string>
     <string name="summary">Zusammenfassung</string>
     <string name="add_receipt">Quittung erfassen</string>
-    <string name="actionbaritem_settings">Einstellungen</string>
+    <string name="actionbaritem_add_trip">Einstellungen</string>
     <string name="createTrip">Trip erstellen</string>
     <string name="newUser">Benutzer hinzufügen</string>
     <string name="save">Speichern</string>
